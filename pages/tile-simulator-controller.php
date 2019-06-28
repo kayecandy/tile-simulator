@@ -1,0 +1,404 @@
+<?php
+defined( 'ABSPATH' ) or die ( 'I\'m a plugin! Please don\'t access me directly!' );
+
+wp_enqueue_style( 'artise-tile-simulator-controller-style', plugins_url( 'artise-simulator/assets/css/tile-simulator-controller.css' ), array( 'dashicons' ) );
+
+
+wp_enqueue_style( 'scrollbar-js-style', plugins_url( 'artise-simulator/assets/css/jquery.scrollbar.css' ) );
+
+// wp_enqueue_script( 'iris', plugins_url( 'artise-simulator/assets/js/iris.min.js' ), array( 'jquery', 'jquery-ui-widget', 'jquery-ui-slider' ) );
+
+wp_enqueue_script( 'scrollbar-js', plugins_url( 'artise-simulator/assets/js/jquery.scrollbar.min.js' ), array( 'jquery' ) );
+
+wp_enqueue_script( 'artise-grout-shapes', plugins_url( 'artise-simulator/assets/js/grout-shapes.js' ), array( 'jquery' ) );
+
+
+wp_enqueue_script( 'artise-tile-simulator-controller-script', plugins_url( 'artise-simulator/assets/js/tile-simulator-controller.js' ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-dialog', 'artise-grout-shapes' ) );
+
+
+wp_localize_script( 'artise-tile-simulator-controller-script', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
+
+
+
+
+$tile_categories = get_terms( array(
+	'taxonomy'			=> 'artise-tile-category',
+	'hide_empty'		=> false,
+	'orderby'			=> 'id',
+	'order'				=> 'ASC'
+) );
+
+$tile_colors = get_posts( array(
+	'post_type'			=> 'artise-tile-colors',
+	'posts_per_page'	=> -1
+) );
+
+$tile_masks = array(  );
+$tile_bg = array(  );
+$tile_data = array(  );
+$tile_count = 0;
+$mask_count = 0;
+$curr_tile_ids = array(  );
+
+$border_category = get_terms( array(
+	'taxonomy'			=> 'artise-tile-category',
+	'hide_empty'		=> true,
+	'slug'				=> BORDER_CATEGORY_SLUG
+) );
+
+$hasBorderCategory = false;
+
+if( sizeof( $border_category ) > 0 ){
+	$hasBorderCategory = true;
+}
+
+
+
+function tile_simulator_overlay(  ){
+	include 'tile-simulator-overlay.php';
+}
+
+add_action( 'wp_footer', 'tile_simulator_overlay' );
+
+
+?>
+
+
+<div id="tile-editor-wrapper">
+
+	<h1 id="tile-editor-title" class="simulator-section-title">Tile Selection</h1>
+
+	<div id="tile-categories-container">
+
+		<ul>
+			<svg class="arrow" viewBox="0 0 100 100">
+				<polygon points="0 50, 65 0, 65 100"></polygon>
+			</svg>
+
+			<li class="tile-category search">
+				<div class="title-container"></div>
+				<div class="tile-container">
+					<div class="tile-wrapper"></div>
+				</div>
+			</li>
+
+
+			<?php foreach( $tile_categories as $i => $tile_category ): ?>
+				<li 
+					class="tile-category<?php echo ( $i == 0 ) ? ' open' : '' ?>"
+					data-name="<?php echo $tile_category->name ?>"
+					data-slug="<?php echo $tile_category->slug ?>"
+				>
+					<div class="title-container"><?php echo $tile_category->name ?></div>
+					<div class="tile-container">
+
+						<div class="tile-wrapper scrollbar-inner">
+							<!-- TILES PER CATEGORY -->
+							<?php 
+								$tiles = get_posts( array(
+									'post_type'					=> 'artise-tiles',
+									'artise-tile-category'		=> $tile_category->slug,
+									'posts_per_page'			=> -1,
+									'offset'					=> 0,
+									'orderby'					=> 'name',
+									'order'						=> 'ASC'
+								) );
+
+
+							?>
+							<?php foreach( $tiles as $tile ): ?>
+								<?php 
+									$tile_img = get_post_meta( $tile->ID, 'artise-tile-img', true );
+
+									$img_size = getimagesize( $tile_img );
+
+									$category_terms = implode( ', ', get_terms( array(
+
+										'taxonomy'				=> 'artise-tile-category',
+										'object_ids'			=> $tile->ID,
+										'fields'				=> 'names'
+									) ) );
+
+
+									$itile = array_search( $tile->ID, $curr_tile_ids );
+									$tile_exists = true;
+
+									if( $itile === false ){
+										$itile =  $tile_count;
+										$tile_exists = false;
+										$curr_tile_ids []= $tile->ID;
+									}
+
+									$shape = 'square';
+									$is_hex = get_post_meta( $tile->ID, 'artise-tile-hex', true );
+
+									// Shape
+									if( $is_hex == 1 ){
+										$shape = 'hexagon';
+
+									}else if( $img_size[0] != $img_size[1] ){
+										$shape = 'rectangle';
+									}
+
+									if( $tile_category->slug == BORDER_CATEGORY_SLUG ){
+										$shape = 'border';
+									}
+
+									// Grout Shapes
+									$grout_shape = get_post_meta( $tile->ID, 'artise-tile-grout', true );
+
+									if( $grout_shape == '' || $grout_shape == '1' )
+										$grout_shape = 'cross';
+									else if( $grout_shape == '0' )
+										$grout_shape = 'nogrout';
+
+
+								?>
+								<div 
+									class="tile-image-container tile-image-cointainer-<?php echo $tile_count ?>" 
+									data-tile-id="<?php echo $tile->ID ?>"
+									data-itile="<?php echo $itile ?>"
+									data-tile-name="<?php echo htmlentities( $tile->post_title ) ?>"
+									data-tile-desc="<?php echo htmlentities( $tile->post_excerpt ) ?>"
+									data-category="<?php echo $category_terms ?>"
+
+									data-category-slug="<?php echo $tile_category->slug ?>"
+									
+								>
+									<img 
+										src="<?php echo $tile_img ?>" 
+										width="75" height="75" 
+										data-shape="<?php echo $shape ?>"
+										data-is-hex="<?php echo $is_hex ?>"
+										data-tile-scale="<?php echo get_post_meta( $tile->ID, 'artise-tile-scale', true ) ?>">
+									<?php echo $tile->post_title ?>
+								</div>
+
+								<?php 
+									if( !$tile_exists ){
+										$tile_count++; 
+
+										$attachments = get_posts( array(
+											'post_type'			=> 'artise-tile-masks',
+											'posts_per_page'	=> -1,
+											'post_parent'		=> $tile->ID,
+											'order'					=> 'ASC'
+										) );
+
+										$temp_masks = array(  );
+
+										foreach ($attachments as $attachment) {
+
+											$mask_src = get_the_post_thumbnail_url( $attachment->ID );
+
+											$mask_color = get_post( get_post_meta( $attachment->ID, 'artise-mask-d-color', true ) );
+
+											$temp_masks []= array(
+
+												'src'			=> $mask_src,
+
+												'color'			=> get_post_meta( $mask_color->ID, 'artise-tile-color', true ),
+
+												'color_id'		=> $mask_color->ID,
+
+												'color_name'	=> $mask_color->post_title
+
+											);
+
+											$mask_count++;
+										}
+
+
+										$tile_masks []= $temp_masks;
+										$bg_color = get_post( get_post_meta( $tile->ID, 'artise-tile-d-bg', true ) );
+
+										
+
+										$tile_bg []= array(
+											'color'				=> get_post_meta( $bg_color->ID, 'artise-tile-color', true ),
+											'color_id'			=> $bg_color->ID,
+											'color_name'		=> $bg_color->post_title
+										);
+
+										$tile_data []= array(
+											'grout_shape'			=> $grout_shape,
+											'is_hexagon'		=> get_post_meta( $tile->ID, 'artise-tile-hex', true ),
+											'shape'				=> $shape
+										);
+
+							
+
+
+									}
+
+								?>	
+							<?php endforeach; ?>
+
+							<?php if( sizeof( $tiles ) == 0 ): ?>
+								<div style="margin-left: 10px; font-style: italic;">No tiles to show for this category</div>
+							<?php endif; ?>
+						</div>
+					</div>
+				</li>
+			<?php endforeach ?>
+		</ul>
+
+	</div>
+
+	
+</div>
+
+
+<div id="tile-color-editor-dialog">
+	<h1 class="simulator-section-title">Color Editor <!-- <span id="save-button" class="dashicons dashicons-download"> </span>--></h1>
+
+	<div id="masks-container" class="dialog-column">
+		<div id="canvas-containers">
+			<div id="tile-canvas-container" class="empty">
+				<div class="quadrant-rotation dashicons dashicons-image-rotate"></div>
+				<canvas width="272" height="272" class="tile-editor-background canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-grout canvas-part"></canvas>
+			</div>
+
+			<div id="border-canvas-container">
+				<canvas width="272" height="272" class="tile-editor-background canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
+				<!-- <canvas width="272" height="272" class="tile-editor-grout canvas-part"></canvas> -->
+			</div>
+		</div>
+		
+
+		<img id="tile-canvas-hatches" style="display: none" src="<?php echo plugins_url( 'artise-simulator/assets/images/misc/hatch.png' ) ?>">
+
+		<span id="selected-tile-title"></span>
+
+		<?php if( $hasBorderCategory ): ?>
+			<div id="tile-borders-container">
+				<div class="artise-button">
+					<div class="add-border">
+						<span class="dashicons dashicons-plus"></span>
+						Add Borders
+					</div>
+					<div class="remove-border">
+						<span class="dashicons dashicons-no"></span>
+						Remove Borders
+					</div>
+					
+				</div>
+				<br>
+			</div>
+			
+
+		<?php endif; ?>
+
+
+		<div id="tile-canvas-bottom-container" class="tile-canvas-bottom">
+			<div id="color-used">
+				<span id="color-used-text">Colors Used:</span>
+				<div id="color-used-container">
+					<div class="tile-colors"></div>
+					<div class="border-colors"></div>
+				</div>
+			</div>
+
+			<div id="tile-size-container">
+				<span id="tile-size-small" class="dashicons dashicons-screenoptions tile-size"></span>
+				<span id="tile-size-big" class="dashicons dashicons-screenoptions tile-size"></span>
+			</div>
+		</div>
+
+		
+		
+	</div>
+
+	<div id="color-selection-container" class="dialog-column">
+		<?php foreach ($tile_colors as $i => $tile_color): ?>
+			<?php $color = get_post_meta( $tile_color->ID, 'artise-tile-color', true ) ?>
+
+			<div 
+				class="tile-color-box" 
+				data-color="<?php echo $color ?>" 
+				data-color-id="<?php echo $tile_color->ID ?>" 
+				data-color-name="<?php echo htmlentities( $tile_color->post_title ) ?>" 
+				style="background-color: <?php echo $color ?>"
+			></div>
+
+		<?php endforeach ?>
+	</div>
+
+	
+</div>
+
+<script type="text/javascript">
+	var BORDER_SLUG = '<?php echo BORDER_CATEGORY_SLUG ?>';
+
+	var tileCount = <?php echo $tile_count ?>;
+	var nMask = {
+		loaded		: 0,
+		total		: <?php echo $mask_count + 4 ?>
+	};
+
+	function loadMask( maskSrc ){
+		var imgClip = new Image(  );
+		imgClip.setAttribute( 'crossOrigin', 'anonymous' );
+		imgClip.src = maskSrc;
+
+		jQuery( imgClip ).load( function(  ){
+			nMask.loaded++;
+			window.loader.progress( nMask.loaded / nMask.total );
+		} )
+
+		return imgClip;
+	}
+
+	var masks = <?php echo json_encode( $tile_masks ) ?>;
+	var backgrounds = <?php echo json_encode( $tile_bg ) ?>;
+	var tileData = <?php echo json_encode( $tile_data ) ?>;
+
+
+	for( var i=0; i < masks.length; i++ ){
+		for( var j=0; j < masks[i].length; j++ ){
+			masks[i][j].src = loadMask( masks[i][j].src );
+		}
+	}
+
+</script>
