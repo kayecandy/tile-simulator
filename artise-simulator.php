@@ -12,9 +12,6 @@ Author URI: http://www.candicecanoso.com/
 
 defined( 'ABSPATH' ) or die ( 'I\'m a plugin! Please don\'t access me directly!' );
 
-require_once( 'google-recaptcha.php' );
-
-
 define( 'BORDER_CATEGORY_SLUG', 'border-collection' );
 
 
@@ -42,7 +39,7 @@ function enqueue_global_scripts(  ){
 add_action( 'wp_enqueue_scripts', 'enqueue_global_scripts' );
 
 
-
+require_once( 'google-recaptcha.php' );
 require_once( 'includes/includes.php' );
 
 
