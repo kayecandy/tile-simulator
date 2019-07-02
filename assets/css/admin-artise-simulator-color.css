@@ -36,6 +36,9 @@
 	display: none;
 }
 
+.wp-picker-container .wp-picker-input-wrap{
+	display: block;
+}
 
 
 .tile-img-icon{
