@@ -38,10 +38,11 @@ jQuery( document ).ready( function( $ ){
 	
 	drawColor( 
 		$( '#background-button canvas' )[0], 
-		bgColor 
+		bgColor,
+		false,
+		bgImg
 	);
-
-
+	
 
 
 	// Functions
@@ -56,16 +57,24 @@ jQuery( document ).ready( function( $ ){
 
 		
 	}
-	function drawColor( canvas, color, changeHeight ){
+	function drawColor( canvas, color, changeHeight, colorImg ){
 		var ctx = canvas.getContext( '2d' );
 
 		if( changeHeight != undefined && changeHeight )
 			canvas.height = $( '#preview-column' ).data( 'max-height' );
 
-		ctx.fillStyle = color;
-		ctx.fillRect( 0, 0, canvas.width, canvas.height );
+
+
+		if( color ){
+			ctx.fillStyle = color;
+			ctx.fillRect( 0, 0, canvas.width, canvas.height );
+		}else{
+			ctx.drawImage( colorImg, 0, 0, canvas.width, canvas.height );
+		}
+		
 
 	}
+
 	function drawColoredMask( canvas, maskImg, color, colorImg ){
 		var ctx = canvas.getContext( '2d' );
 
@@ -157,7 +166,8 @@ jQuery( document ).ready( function( $ ){
 			drawColor( 
 				$( '#preview-column canvas[data-itile=0]' )[0], 
 				bgColor,
-				true
+				true,
+				bgImg
 			);
 
 			
@@ -213,8 +223,8 @@ jQuery( document ).ready( function( $ ){
 				.data( 'img', img )
 				.attr( 'data-img', img );
 
-			drawColorOnlyMask( selectedCanvas[0], color );
-			drawColorOnlyMask( previewCanvas[0], color );
+			drawColorOnlyMask( selectedCanvas[0], color, img );
+			drawColorOnlyMask( previewCanvas[0], color, img );
 
 			tb_remove(  );
 

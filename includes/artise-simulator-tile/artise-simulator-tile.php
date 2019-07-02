@@ -153,6 +153,11 @@ function artise_tile_mask_meta_box(  ){
 	
 	$color = get_post_meta( $color_id, 'artise-tile-color', true );
 
+	$color_img = get_post_meta( $color_id, 'artise-tile-img', true );
+
+	$color_img_tag = wp_get_attachment_image( $color_img );
+
+
 	if( $color_id == -1 )
 		$color = '#fff';
 
@@ -188,8 +193,10 @@ function artise_tile_mask_meta_box(  ){
 		<script type="text/javascript">
 			window.postId = <?php echo $post->ID ?>;
 			var bgColor = '<?php echo $color ?>';
+			var bgImg = $( '<?php echo $color_img_tag ?>')[0];
 
 			var groutShape = '<?php echo $tile_grout ?>';
+
 		</script>
 
 		<div id="tile-mask-box">
