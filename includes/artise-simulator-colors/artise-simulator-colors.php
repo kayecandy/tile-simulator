@@ -39,15 +39,21 @@ add_filter( 'manage_edit-artise-tile-colors_columns', 'add_artise_tile_color_col
 
 function add_artise_tile_color_column_content( $column, $post_id ){
 	if( $column === 'artise-tile-color' ){
-		// echo 'heloo world';
-		echo '<div class="artise-tile-color-box" style="background:' . get_post_meta( $post_id, 'artise-tile-color', true ) . '"></div>';
+
+		$color = get_post_meta( $post_id, 'artise-tile-color', true );
+		$img = get_post_meta( $post_id, 'artise-tile-img', true );
+		$img_url =  wp_get_attachment_url( $img );
+
+		$background = ( !empty( $color ) ? $color : 'url(' . $img_url . ')' );
+
+		echo '<div class="artise-tile-color-box" style="background:' . $background . '"></div>';
 	}
 }
 add_action( 'manage_artise-tile-colors_posts_custom_column', 'add_artise_tile_color_column_content', 10, 2 );
 
 
 function add_artise_color_meta_boxes(  ){
-	add_meta_box( 'artise_tile_color', 'Color', 'artise_tile_color_meta_box', 'artise-tile-colors', 'normal' );
+	add_meta_box( 'artise_tile_color', 'Image/Color', 'artise_tile_color_meta_box', 'artise-tile-colors', 'normal' );
 }
 add_action( 'add_meta_boxes', 'add_artise_color_meta_boxes' );
 
@@ -57,19 +63,45 @@ function artise_tile_color_meta_box(  ){
 	global $post;
 
 	$color = get_post_meta( $post->ID, 'artise-tile-color', true );
+	$img = get_post_meta( $post->ID, 'artise-tile-img', true );
+
+	$img_url  = wp_get_attachment_url( $img );
+
+	$is_new_post = empty( $color ) && empty( $img );
 
 	if( empty( $color ) )
 		$color = '#fff';
 
 	?>
-		<label style="vertical-align: top">Select Color: </label>&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="text" value="<?php echo $color ?>" name="tile-color" class="tile-color-field" />
+
+
+		<div class="d-inline-block color-field-container color-field-container-color <?php if($color != '#fff' || $is_new_post) echo 'active' ?>">
+			<div>Select Color:</div>
+			<div class="tile-color-icon" style="background-color: <?php echo $color ?>">
+				<span class="dashicons dashicons-art"></span>
+			</div>
+
+			<input type="text" value="<?php echo $color ?>" name="tile-color" class="tile-color-field" />
+		</div>
+
+		<div class="or-container d-inline-block">
+			OR
+		</div>
+
+		<div  class="d-inline-block color-field-container color-field-container-img <?php if(!empty($img) || $is_new_post) echo 'active' ?>">
+
+			<div>Select Image:</div>
+
+			<div class="tile-img-icon" style="background-image: url('<?php echo  $img_url ?>');">
+				<input type="text" class="tile-img-field" name="tile-img">
+			</div>
+		</div>
 		
-		<script type="text/javascript">
-			jQuery( document ).ready( function( $ ){
-				$( '.tile-color-field' ).wpColorPicker(  );
-			} )
-		</script>
+
+		
+
+		
+		
 
 	<?php
 
@@ -77,15 +109,14 @@ function artise_tile_color_meta_box(  ){
 
 
 function save_artise_tile_color_meta_box( $post_id ){
-	if( !isset( $_POST['tile-color'] ) )
+	if( !isset( $_POST['tile-color'] ) && !isset( $_POST['tile-img'] ) )
 		return;
 
 	if( !current_user_can( 'edit_post', $post_id ) )
 		return;
 
 	update_post_meta( $post_id, 'artise-tile-color', $_POST['tile-color'] );
-
-	// update_post_meta( $post_id, 'artise-tile-color', 'hello world');
+	update_post_meta( $post_id, 'artise-tile-img', $_POST['tile-img'] );
 
 }
 add_action( 'save_post_artise-tile-colors', 'save_artise_tile_color_meta_box' );
@@ -104,6 +135,13 @@ function enqueue_artise_tile_color_scripts( $hook ){
 
 	wp_enqueue_style( 'wp-color-picker' );
 	wp_enqueue_script( 'wp-color-picker' );
+
+	wp_enqueue_media();
+
+
+	wp_enqueue_style( 'admin-artise-simulator-color-style', plugins_url( 'artise-simulator/assets/css/admin-artise-simulator-color.css' ) );
+
+	wp_enqueue_script( 'admin-artise-simulator-color-script', plugins_url( 'artise-simulator/assets/js/admin-artise-simulator-color.js' ), array( 'jquery', 'wp-color-picker' ) );
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_artise_tile_color_scripts' );
 
