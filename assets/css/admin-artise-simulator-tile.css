@@ -154,6 +154,8 @@
 	display: inline-block;
 	cursor: pointer;
 	position: relative;
+	background-size: cover !important;
+	background-position: center !important;
 }
 
 #color-grid .tile-color-box:hover{
@@ -216,4 +218,9 @@
 	opacity: 1;
 	visibility: visible;
 
+}
+
+
+#color-grid .tile-color-box .tile-color-img{
+	display: none;
 }

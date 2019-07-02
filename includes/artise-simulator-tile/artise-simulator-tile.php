@@ -271,13 +271,24 @@ function artise_tile_mask_meta_box(  ){
 
 					<!-- Tile Colors -->
 					<?php foreach ($tile_colors as $tile_color): ?>
+						<?php 
+							$color = get_post_meta( $tile_color->ID, 'artise-tile-color', true );
+							$img = get_post_meta( $tile_color->ID, 'artise-tile-img', true );
+							$img_url = wp_get_attachment_url( $img );
+
+							$background = ( !empty( $color ) ? $color : 'url(' . $img_url . ')' );
+						?>
+
 						<div 
 							class="tile-color-box" 
 							data-color-id="<?php echo $tile_color->ID ?>"
-							data-color="<?php echo get_post_meta( $tile_color->ID, 'artise-tile-color', true ) ?>"
+							data-color="<?php echo $color ?>"
+							data-img="<?php echo $img_url ?>"
 							data-color-name="<?php echo $tile_color->post_title ?>"
-							style="background: <?php echo get_post_meta( $tile_color->ID, 'artise-tile-color', true ) ?>"
-						></div>
+							style="background: <?php echo $background ?>"
+						>
+							<img class="tile-color-img" src="<?php echo $img_url ?>">
+						</div>
 					<?php endforeach; ?>
 				</div>
 			</div>

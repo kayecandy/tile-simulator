@@ -36,6 +36,10 @@ function artise_tile_mask_tag( $post ){
 	$mask_src = get_the_post_thumbnail_url( $post->ID );
 	$color_id = get_post_meta( $post->ID, 'artise-mask-d-color', true );
 	$color = get_post_meta( $color_id, 'artise-tile-color', true );
+
+	$img = get_post_meta( $color_id, 'artise-tile-img', true );
+	$img_url = wp_get_attachment_url( $img );
+
 	?>
 		
 		<a 
@@ -52,6 +56,7 @@ function artise_tile_mask_tag( $post ){
 				data-mask-src="<?php echo $mask_src ?>"
 				data-color-id="<?php echo $color_id ?>"
 				data-color="<?php echo $color ?>"
+				data-color-img="<?php echo $img_url ?>"
 			></canvas>
 
 			<span class="dashicons dashicons-no remove-button"></span>

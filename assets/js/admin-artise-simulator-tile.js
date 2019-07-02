@@ -66,32 +66,36 @@ jQuery( document ).ready( function( $ ){
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 
 	}
-	function drawColoredMask( canvas, maskImg, color ){
+	function drawColoredMask( canvas, maskImg, color, colorImg ){
 		var ctx = canvas.getContext( '2d' );
 
 		ctx.clearRect( 0, 0, canvas.width, canvas.height );
 
 		ctx.drawImage( maskImg, 0, 0, canvas.width, canvas.height );
-		ctx.globalCompositeOperation = 'source-in';
 
-		ctx.fillStyle = color;
-		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 
-		ctx.globalCompositeOperation = 'source-over';
+		drawColorOnlyMask( canvas, color, colorImg );
+
 	}
 
-	function drawColorOnlyMask( canvas, color ){
+	function drawColorOnlyMask( canvas, color, img ){
 		var ctx = canvas.getContext( '2d' );
 
 
 		ctx.globalCompositeOperation = 'source-in';
 
-		ctx.fillStyle = color;
-		ctx.fillRect( 0, 0, canvas.width, canvas.height );
+		if( color ){
+			ctx.fillStyle = color;
+			ctx.fillRect( 0, 0, canvas.width, canvas.height );
+
+		}else{
+			ctx.drawImage( img, 0, 0, canvas.width, canvas.height );
+		}
+		
 
 		ctx.globalCompositeOperation = 'source-over';
-
 	}
+
 
 	function getTileCanvas(  ){
 		var $previewColumn = $( '#preview-column' );
@@ -118,14 +122,27 @@ jQuery( document ).ready( function( $ ){
 	}
 
 	function loadCanvas( canvas ){
+		var $canvas = $( canvas );
+
 		var canvasPreview = document.createElement( 'canvas' );
 		var divPreview = $( '#preview-column' );
 
 		var maskImg = new Image(  );
 		maskImg.setAttribute( 'crossOrigin', 'anonymous' );
-		maskImg.src = $( canvas ).data( 'mask-src' );
+		maskImg.src = $canvas.data( 'mask-src' );
 
-		$( maskImg ).load( function(  ){
+
+		var colorImg = new Image(  );
+		colorImg.setAttribute( 'crossOrigin', 'anonymous' );
+		colorImg.src = $canvas.data( 'color-img' );
+
+
+		$( maskImg ).add( colorImg ).load( function(  ){
+			// Ensure both images has loaded
+			if( !maskImg.complete || !colorImg.complete )
+				return;
+
+
 			// Canvas Size
 			canvasPreview.width = 200;
 			canvasPreview.height = 200 * ( maskImg.height / maskImg.width );
@@ -146,8 +163,9 @@ jQuery( document ).ready( function( $ ){
 			
 
 			// Draw mask
-			drawColoredMask( canvas, this, $( canvas ).data( 'color' ) );
-			drawColoredMask( canvasPreview, this, $( canvas ).data( 'color' ) );
+
+			drawColoredMask( canvas, maskImg, $canvas.data( 'color' ), colorImg );
+			drawColoredMask( canvasPreview, maskImg, $canvas.data( 'color' ), colorImg );
 
 			var iTile = $( '#preview-column canvas' ).length;
 
@@ -155,7 +173,7 @@ jQuery( document ).ready( function( $ ){
 				.data( 'itile', iTile )
 				.attr( 'data-itile', iTile )
 
-			$( canvas )
+			$canvas
 				.data( 'itile', iTile )
 				.attr( 'data-itile', iTile )
 
@@ -170,14 +188,17 @@ jQuery( document ).ready( function( $ ){
 
 
 	$( document ).on( 'click', '#color-grid .tile-color-box', function(  ){
+		var $this = $( this );
 
 		var selectedCanvas = $( '#settings-column .thickbox.color-picker canvas.selected' );
 		var iTile = selectedCanvas.data( 'itile' );
 
 		var previewCanvas = $( '#preview-column canvas[data-itile=' + iTile + ']' );
 
-		var colorId = $( this ).data( 'color-id' );
-		var color = $( this ).data( 'color' );
+
+		var colorId = $this.data( 'color-id' );
+		var color = $this.data( 'color' );
+		var img = $( '.tile-color-img', $this )[0];
 
 
 
@@ -188,7 +209,9 @@ jQuery( document ).ready( function( $ ){
 				.data( 'color-id', colorId )
 				.attr( 'data-color-id', colorId )
 				.data( 'color', color )
-				.attr( 'data-color', color );
+				.attr( 'data-color', color )
+				.data( 'img', img )
+				.attr( 'data-img', img );
 
 			drawColorOnlyMask( selectedCanvas[0], color );
 			drawColorOnlyMask( previewCanvas[0], color );
@@ -220,10 +243,12 @@ jQuery( document ).ready( function( $ ){
 							.data( 'color-id', colorId )
 							.attr( 'data-color-id', colorId )
 							.data( 'color', color )
-							.attr( 'data-color', color );
+							.attr( 'data-color', color )
+							.data( 'img', img )
+							.attr( 'data-img', img );
 
-						drawColorOnlyMask( selectedCanvas[0], color );
-						drawColorOnlyMask( previewCanvas[0], color );
+						drawColorOnlyMask( selectedCanvas[0], color, img );
+						drawColorOnlyMask( previewCanvas[0], color, img );
 
 						$( '#tile-image-input' ).val( getTileCanvas(  ).toDataURL(  ) );
 						
