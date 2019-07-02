@@ -68,6 +68,9 @@ function drawRoundRect( ctx, x, y, width, height, radius, fill, stroke ){
 	ctx.quadraticCurveTo( x, y, x + radius.tl, y );
 	ctx.closePath(  );
 
+	if( !fill )
+		fill = '#ff0000';
+
 
 	if( fill !== undefined ){
 		ctx.fillStyle = fill;
@@ -192,15 +195,15 @@ function drawSaveCanvas(  ){
 
 	var ctx = saveCanvas.getContext( '2d' );
 
-	ctx.fillStyle = 'white';
-	ctx.fillRect( 0, 0, jQuery( saveCanvas ).width(  ), jQuery( saveCanvas ).height(  )  );
-
-
 	var selectedTile = jQuery( '.tile-image-container.selected' );
 	var selectedCategory = jQuery( '.tile-category.open' );
 
 	var hasBorders = isBorderActive(  );
 	var selectedBorder;
+
+	// Reset
+	ctx.clearRect( 0, 0, saveCanvas.width, saveCanvas.height );
+
 
 	if( hasBorders )
 		$selectedBorder = jQuery( '.tile-image-container.border-selected' );
@@ -401,7 +404,7 @@ function drawSaveCanvas(  ){
 
 		var $colorBox = jQuery( $colorUsedBoxes[iColor] );
 
-		if( $colorBox.data( 'color' ) == false ){
+		if( !$colorBox.data( 'color' ) && $colorBox.data( 'color-image' ).naturalWidth == 0 ){
 			i--;
 
 		}else if( colorFinished.indexOf( $colorBox.data( 'color-id' ) ) == -1 ){
@@ -416,6 +419,7 @@ function drawSaveCanvas(  ){
 
 
 			tempY = colY + ( tempI * ( n.colorBox.size + n.colorBox.space ) );
+			
 			drawRoundRect(
 				ctx,
 				tempX ,
@@ -426,6 +430,19 @@ function drawSaveCanvas(  ){
 				$colorBox.data( 'color' ),
 				n.colorBox.stroke
 			);
+
+			// Color Image
+			if( $colorBox.data( 'color-image' ).naturalWidth != 0 ){
+				ctx.globalCompositeOperation = 'source-atop';
+				ctx.drawImage( $colorBox.data( 'color-image' ), tempX, tempY, n.colorBox.size, n.colorBox.size );
+				ctx.globalCompositeOperation = 'source-over';
+
+			}
+
+			
+			
+
+
 
 			// Color Text - ID
 			tempY += font.color.fontSize;
@@ -756,10 +773,20 @@ function drawSaveCanvas(  ){
 		colX,
 		colY
 	);
+
+
+	// Fill
+	ctx.globalCompositeOperation = 'destination-over';
+	ctx.fillStyle = 'white';
+	ctx.fillRect( 0, 0, jQuery( saveCanvas ).width(  ), jQuery( saveCanvas ).height(  )  );
+
+	ctx.globalCompositeOperation = 'source-over';
+
+
 }
 
 
-function drawColoredMask( canvas, maskImg, color ){
+function drawColoredMask( canvas, maskImg, color, colorImg ){
 	var $canvasContainers = jQuery( '#canvas-containers' );
 
 	var height = canvas.width * ( maskImg.height / maskImg.width );
@@ -774,12 +801,8 @@ function drawColoredMask( canvas, maskImg, color ){
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 
 	ctx.drawImage( maskImg, 0, 0, canvas.width, canvas.height );
-	ctx.globalCompositeOperation = 'source-in';
-
-	ctx.fillStyle = color;
-	ctx.fillRect( 0, 0, canvas.width, canvas.height );
-
-	ctx.globalCompositeOperation = 'source-over';
+	
+	drawColorOnlyMask( canvas, color, colorImg );
 }
 
 function drawHatches( canvas ){
@@ -793,30 +816,37 @@ function drawHatches( canvas ){
 
 }
 
-function drawColorOnlyMask( canvas, color ){
+function drawColorOnlyMask( canvas, color, img ){
 	var ctx = canvas.getContext( '2d' );
 
 
 	ctx.globalCompositeOperation = 'source-in';
 
-	ctx.fillStyle = color;
-	ctx.fillRect( 0, 0, canvas.width, canvas.height );
+	if( color ){
+		ctx.fillStyle = color;
+		ctx.fillRect( 0, 0, canvas.width, canvas.height );
+
+	}else if( img ){
+		ctx.drawImage( img, 0, 0, canvas.width, canvas.height );
+	}
 
 	ctx.globalCompositeOperation = 'source-over';
 
 }
 
 
-function drawBackground( container, color ){
+function drawBackground( container, color, colorImage ){
 	var canvas = jQuery( '.tile-editor-background', container )[0];
 	var ctx = canvas.getContext( '2d' );
 
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 
-
-	if( color != false ){
+	if( color ){
 		ctx.fillStyle = color;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
+
+	}else if( colorImage.naturalWidth != 0 ){
+		ctx.drawImage( colorImage, 0, 0, canvas.width, canvas.height );
 	}
 	
 }
@@ -896,7 +926,7 @@ function drawRotatedQuadrant( canvas, quadrant, rotation ){
 }
 
 
-function generateUsedColorBox( color_id, color, colorName, dataHover, customClass ){
+function generateUsedColorBox( color_id, color, colorName, colorImage, dataHover, customClass ){
 	var box = jQuery( '<div></div>' );
 
 	box.addClass( 'color-used-box' );
@@ -905,12 +935,12 @@ function generateUsedColorBox( color_id, color, colorName, dataHover, customClas
 	box.attr( 'data-color-used-hover', dataHover );
 	box.data( 'color-used-hover', dataHover );
 
-	changeUsedColorBox( box, color_id, color, colorName );
+	changeUsedColorBox( box, color_id, color, colorName, colorImage );
 
 	return box;
 }
 
-function changeUsedColorBox( box, color_id, color, colorName ){
+function changeUsedColorBox( box, color_id, color, colorName, colorImage ){
 	box.attr( 'data-color-id', color_id );
 	box.data( 'color-id', color_id );
 
@@ -920,8 +950,10 @@ function changeUsedColorBox( box, color_id, color, colorName ){
 	box.attr( 'data-color-name', colorName );
 	box.data( 'color-name', colorName )
 
+	box.data( 'color-image', colorImage );
+
 	box.css( {
-		background: color
+		background: ( color ) ? color : 'url(' + colorImage.src + ')'
 	} )
 }
 
@@ -1254,7 +1286,7 @@ function applyTileToCanvas( iTile ){
 	// Step: Draw Masks
 	jQuery( '.tile-editor-pattern', container ).removeClass( 'used' );
 	for( var i=0; i<mask.length; i++ ){
-		drawColoredMask( jQuery( '.tile-editor-pattern', container ).get( i ), mask[i].src, mask[i].color );
+		drawColoredMask( jQuery( '.tile-editor-pattern', container ).get( i ), mask[i].src, mask[i].color, mask[i].color_img );
 		jQuery( jQuery( '.tile-editor-pattern', container )[i] ).attr( 'data-color-used-hover', shape + '-pattern-' + i );
 		jQuery( jQuery( '.tile-editor-pattern', container )[i] ).data( 'color-used-hover', shape + '-pattern-' + i );
 		jQuery( jQuery( '.tile-editor-pattern', container )[i] ).addClass( 'used' );
@@ -1269,10 +1301,10 @@ function applyTileToCanvas( iTile ){
 		noBgClass = 'border-no-bg';
 
 	
-	if( backgrounds[iTile].color == false ){
+	if( !backgrounds[iTile].color && !backgrounds[iTile].color_img.src ){
 		jQuery( '#tile-color-editor-dialog' ).addClass( noBgClass );
 	}else{
-		drawBackground( container, backgrounds[iTile].color );
+		drawBackground( container, backgrounds[iTile].color, backgrounds[iTile].color_img );
 
 		jQuery( '#tile-color-editor-dialog' ).removeClass( noBgClass );
 	}
@@ -1363,7 +1395,8 @@ function applyValues( iTile ){
 	backgrounds[iTile] = {
 		color 			: backgroundColor.data( 'color' ),
 		color_id		: backgroundColor.data( 'color-id' ),
-		color_name		: backgroundColor.data( 'color-name' )
+		color_name		: backgroundColor.data( 'color-name' ),
+		color_img		: backgroundColor.data( 'color-image' )
 	}
 
 	jQuery( '#color-used .color-used-box.pattern' ).each( function( j ){
@@ -1378,6 +1411,7 @@ function applyValues( iTile ){
 		masks[iTile][j].color = $this.data( 'color' );
 		masks[iTile][j].color_id = $this.data( 'color-id' );
 		masks[iTile][j].color_name = $this.data( 'color-name' );
+		masks[iTile][j].color_img = $this.data( 'color-image' );
 		masks[iTile][j].src = image;
 		
 		
@@ -1584,6 +1618,7 @@ jQuery( function( $ ){
 				backgrounds[iTile].color_id, 
 				backgrounds[iTile].color, 
 				backgrounds[iTile].color_name, 
+				backgrounds[iTile].color_img, 
 				'border-background', 
 				'border-background' 
 			) );
@@ -1594,6 +1629,7 @@ jQuery( function( $ ){
 					mask[i].color_id, 
 					mask[i].color, 
 					mask[i].color_name,
+					mask[i].color_img,
 					'border-pattern-' + i, 
 					'border-pattern' 
 				) );
@@ -1698,6 +1734,7 @@ jQuery( function( $ ){
 			backgrounds[iTile].color_id, 
 			backgrounds[iTile].color, 
 			backgrounds[iTile].color_name, 
+			backgrounds[iTile].color_img,
 			shape + '-background', 
 			'background' 
 		) );
@@ -1708,6 +1745,7 @@ jQuery( function( $ ){
 				mask[i].color_id, 
 				mask[i].color, 
 				mask[i].color_name,
+				mask[i].color_img,
 				shape + '-pattern-' + i, 
 				'pattern' 
 			) );
@@ -1729,11 +1767,12 @@ jQuery( function( $ ){
 		var part = canvas.data( 'color-used-hover' );
 		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
 		var color = box.data( 'color' );
+		var colorImage = box.data( 'color-image' );
 
 
 
 		if( canvas[0] != undefined )
-			drawColorOnlyMask( canvas[0], color );
+			drawColorOnlyMask( canvas[0], color, colorImage );
 
 		// Remove Previous
 		$( '.tile-editor-pattern' ).removeClass( 'hovered' );
@@ -1784,9 +1823,10 @@ jQuery( function( $ ){
 		var part = canvas.data( 'color-used-hover' );
 		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
 		var color = box.data( 'color' );
+		var colorImage = box.data( 'color-image' );
 
 		if( canvas[0] != undefined ){
-			drawColorOnlyMask( canvas[0], color );
+			drawColorOnlyMask( canvas[0], color, colorImage );
 			canvas.removeClass( 'hatched' );
 		}
 		
@@ -1801,9 +1841,10 @@ jQuery( function( $ ){
 		var part = canvas.data( 'color-used-hover' );
 		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
 		var color = box.data( 'color' );
+		var colorImage = box.data( 'color-image' );
 
 		if( canvas[0] != undefined )
-			drawColorOnlyMask( canvas[0], color );
+			drawColorOnlyMask( canvas[0], color, colorImage );
 
 		box.click(  );
 	} )
@@ -1855,9 +1896,11 @@ jQuery( function( $ ){
 
 	// Color Editor Events
 	$( '#tile-color-editor-dialog' ).on( 'hover', '#color-used .color-used-box', function( e ){
-		var dataHover = $( this ).data( 'color-used-hover' );
-		var colorId = $( this ).data( 'color-id' );
-		var color = $( this ).data( 'color' );
+		var $colorUsedBox = $( this );
+		var dataHover = $colorUsedBox.data( 'color-used-hover' );
+		var colorId = $colorUsedBox.data( 'color-id' );
+		var color = $colorUsedBox.data( 'color' );
+		var colorImage = $colorUsedBox.data( 'color-image' );
 
 		var canvas = $( '#canvas-containers canvas[data-color-used-hover='+dataHover+']' );
 
@@ -1873,14 +1916,8 @@ jQuery( function( $ ){
 		if( e.type === 'mouseenter' ){
 			drawHatches( canvas[0] );		
 		}else if( e.type === 'mouseleave' ){
-			drawColorOnlyMask( canvas[0], color );
+			drawColorOnlyMask( canvas[0], color, colorImage );
 		}
-
-		// if( e.type == 'mouseenter' ){
-		// 	drawColorOnlyMask( canvas[0], '#fff' );
-		// }else if( e.type == 'mouseleave' ){
-		// 	drawColorOnlyMask( canvas[0], color );
-		// }
 
 	} );
 
@@ -1912,8 +1949,7 @@ jQuery( function( $ ){
 		if( window.selectedMask == undefined )
 			return;
 
-		drawColorOnlyMask( window.selectedMask[0], $( this ).data( 'color' ) );
-		// console.log( $( this ).data( 'color' ) );
+		drawColorOnlyMask( window.selectedMask[0], $( this ).data( 'color' ), $( '.tile-color-img', this )[0] );
 
 	} );
 
@@ -1922,25 +1958,30 @@ jQuery( function( $ ){
 		if( window.selectedMask == undefined )
 			return;
 
-		drawColorOnlyMask( window.selectedMask[0], $( '#color-used .color-used-box.selected' ).data( 'color' ) );
-		// console.log( $( this ).data( 'color' ) );
+		var $selectedColorBox = $( '#color-used .color-used-box.selected' );
+
+		drawColorOnlyMask( window.selectedMask[0], $selectedColorBox.data( 'color' ), $selectedColorBox.data( 'color-image' ) );
 
 	} );
 
 	$( '#tile-color-editor-dialog' ).on( 'click', '#color-selection-container .tile-color-box', function(  ){
+
 
 		if( window.selectedMask == undefined )
 			return;
 
 		$( '#color-selection-container .tile-color-box.color-used-selected' ).removeClass( 'color-used-selected' );
 
-		$( this ).addClass( 'color-used-selected' );
+		var $this = $( this );
+
+		$this.addClass( 'color-used-selected' );
 
 		changeUsedColorBox(
 			$( '#color-used .color-used-box.selected' ),
-			$( this ).data( 'color-id' ),
-			$( this ).data( 'color' ),
-			$( this ).data( 'color-name' )
+			$this.data( 'color-id' ),
+			$this.data( 'color' ),
+			$this.data( 'color-name' ),
+			$( '.tile-color-img', this )[0]
 		);
 
 		applyColorEditor(  );

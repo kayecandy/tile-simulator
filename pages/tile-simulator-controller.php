@@ -199,6 +199,8 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 												'color'			=> get_post_meta( $mask_color->ID, 'artise-tile-color', true ),
 
+												'color_img'		=> wp_get_attachment_url( get_post_meta( $mask_color->ID, 'artise-tile-img', true ) ),
+
 												'color_id'		=> $mask_color->ID,
 
 												'color_name'	=> $mask_color->post_title
@@ -217,7 +219,9 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 										$tile_bg []= array(
 											'color'				=> get_post_meta( $bg_color->ID, 'artise-tile-color', true ),
 											'color_id'			=> $bg_color->ID,
-											'color_name'		=> $bg_color->post_title
+											'color_name'		=> $bg_color->post_title,
+
+											'color_img'			=> wp_get_attachment_url( get_post_meta( $bg_color->ID, 'artise-tile-img', true ) )
 										);
 
 										$tile_data []= array(
@@ -352,15 +356,27 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 	<div id="color-selection-container" class="dialog-column">
 		<?php foreach ($tile_colors as $i => $tile_color): ?>
-			<?php $color = get_post_meta( $tile_color->ID, 'artise-tile-color', true ) ?>
+			<?php 
+
+				$color = get_post_meta( $tile_color->ID, 'artise-tile-color', true );
+				$img = get_post_meta( $tile_color->ID, 'artise-tile-img', true );
+
+				$img_url = wp_get_attachment_url( $img );
+
+				$background = ( !empty( $color ) ? $color : 'url(' . $img_url . ')' );
+
+			?>
 
 			<div 
 				class="tile-color-box" 
 				data-color="<?php echo $color ?>" 
 				data-color-id="<?php echo $tile_color->ID ?>" 
 				data-color-name="<?php echo htmlentities( $tile_color->post_title ) ?>" 
-				style="background-color: <?php echo $color ?>"
-			></div>
+				data-img="<?php echo $img_url ?>"
+				style="background: <?php echo $background ?>"
+			>
+				<img class="tile-color-img" src="<?php echo $img_url ?>">
+			</div>
 
 		<?php endforeach ?>
 	</div>
@@ -370,11 +386,13 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 <script type="text/javascript">
 	var BORDER_SLUG = '<?php echo BORDER_CATEGORY_SLUG ?>';
+	var ENV_COUNT = 5;
 
 	var tileCount = <?php echo $tile_count ?>;
 	var nMask = {
 		loaded		: 0,
-		total		: <?php echo $mask_count + 4 ?>
+		total		: <?php echo ( $mask_count * 2 ) +  sizeof( $tile_bg
+		 ) ?> +  ENV_COUNT
 	};
 
 	function loadMask( maskSrc ){
@@ -394,10 +412,15 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 	var backgrounds = <?php echo json_encode( $tile_bg ) ?>;
 	var tileData = <?php echo json_encode( $tile_data ) ?>;
 
+	for( var i=0; i < backgrounds.length; i++ ){
+		backgrounds[i].color_img = loadMask( backgrounds[i].color_img );
+	}
+
 
 	for( var i=0; i < masks.length; i++ ){
 		for( var j=0; j < masks[i].length; j++ ){
 			masks[i][j].src = loadMask( masks[i][j].src );
+			masks[i][j].color_img = loadMask( masks[i][j].color_img );
 		}
 	}
 
