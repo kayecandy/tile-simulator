@@ -1301,7 +1301,7 @@ function applyTileToCanvas( iTile ){
 		noBgClass = 'border-no-bg';
 
 	
-	if( !backgrounds[iTile].color && !backgrounds[iTile].color_img.src ){
+	if( !backgrounds[iTile].color && backgrounds[iTile].color_img.naturalWidth == 0 ){
 		jQuery( '#tile-color-editor-dialog' ).addClass( noBgClass );
 	}else{
 		drawBackground( container, backgrounds[iTile].color, backgrounds[iTile].color_img );
