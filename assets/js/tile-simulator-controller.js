@@ -826,7 +826,7 @@ function drawColorOnlyMask( canvas, color, img ){
 		ctx.fillStyle = color;
 		ctx.fillRect( 0, 0, canvas.width, canvas.height );
 
-	}else if( img ){
+	}else if( img.naturalWidth ){
 		ctx.drawImage( img, 0, 0, canvas.width, canvas.height );
 	}
 
