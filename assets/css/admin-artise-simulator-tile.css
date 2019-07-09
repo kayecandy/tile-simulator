@@ -90,10 +90,7 @@
 }
 
 #tile-masks-container a .tile-mask{
-	-webkit-border-radius: 20%;
-	   -moz-border-radius: 20%;
-	        border-radius: 20%;
-
+	
 	transition: all 0.2s ease-out;
 		-webkit-transition: all 0.2s ease-out;
 		-moz-transition: all 0.2s ease-out;
