@@ -63,12 +63,10 @@ jQuery( document ).ready( function( $ ){
 		if( changeHeight != undefined && changeHeight )
 			canvas.height = $( '#preview-column' ).data( 'max-height' );
 
-
-
 		if( color ){
 			ctx.fillStyle = color;
 			ctx.fillRect( 0, 0, canvas.width, canvas.height );
-		}else{
+		}else if( colorImg && colorImg.naturalWidth ){
 			ctx.drawImage( colorImg, 0, 0, canvas.width, canvas.height );
 		}
 		
@@ -223,8 +221,8 @@ jQuery( document ).ready( function( $ ){
 				.data( 'img', img )
 				.attr( 'data-img', img );
 
-			drawColorOnlyMask( selectedCanvas[0], color, img );
-			drawColorOnlyMask( previewCanvas[0], color, img );
+			drawColor( selectedCanvas[0], color, false, img );
+			drawColor( previewCanvas[0], color, false, img )
 
 			tb_remove(  );
 
