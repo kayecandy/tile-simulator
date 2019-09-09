@@ -70,6 +70,11 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 	<h1 id="tile-editor-title" class="simulator-section-title">Tile Selection</h1>
 
+	<div style="text-align: right">
+		<button id="tile-selection-expand-button" class="artise-button" data-toggle-text="Collapse">Expand</button>
+		
+	</div>
+
 	<div id="tile-categories-container">
 
 		<ul>
@@ -262,28 +267,28 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 		<div id="canvas-containers">
 			<div id="tile-canvas-container" class="empty">
 				<div class="quadrant-rotation dashicons dashicons-image-rotate"></div>
-				<canvas width="272" height="272" class="tile-editor-background canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-pattern canvas-part"></canvas>
-				<canvas width="272" height="272" class="tile-editor-grout canvas-part"></canvas>
+				<canvas class="tile-editor-background canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-pattern canvas-part"></canvas>
+				<canvas class="tile-editor-grout canvas-part"></canvas>
 			</div>
 
 			<div id="border-canvas-container">
@@ -335,6 +340,12 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 			
 
 		<?php endif; ?>
+
+		<button id="preview-tile-button" class="artise-button">
+			<span class="dashicons dashicons-visibility"></span>
+			Preview and Save
+		</button>
+
 
 
 		<div id="tile-canvas-bottom-container" class="tile-canvas-bottom">

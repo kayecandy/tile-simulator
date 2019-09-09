@@ -792,7 +792,7 @@ function drawColoredMask( canvas, maskImg, color, colorImg ){
 	var height = canvas.width * ( maskImg.height / maskImg.width );
 
 	canvas.height = height;
-	$canvasContainers.height( height );
+	// $canvasContainers.height( height );
 
 
 	var ctx = canvas.getContext( '2d' );
@@ -2173,6 +2173,24 @@ jQuery( function( $ ){
 
 	// BUTTONS
 
+	$( '#tile-selection-expand-button' ).click( function(  ){
+		var $this = $( this );
+		var toggleText = $this.data( 'toggle-text' );
+
+		$( '.simulator-container' ).toggleClass( 'tile-selection-expand' );
+		$this.data( 'toggle-text', $this.text(  ) );
+		$this.text( toggleText );
+
+
+	} )
+
+	$( '#preview-tile-button' ).click( function(  ){
+		$( '.simulator-container' ).addClass( 'mobile-preview-section' );
+	} )
+
+	$( '#edit-tile-button' ).click( function(  ){
+		$( '.simulator-container' ).removeClass( 'mobile-preview-section' );
+	} )
 
 	$( '#save-button' ).click( function(  ){
 		if( $( '.tile-image-container.selected' ).length === 0 ){

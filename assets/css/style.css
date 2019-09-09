@@ -28,6 +28,7 @@
 
 body{
 	/*margin-top: 60px !important;*/
+	min-width: 350px;
 }
 
 span.dashicons{

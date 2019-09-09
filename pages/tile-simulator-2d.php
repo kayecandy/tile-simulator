@@ -497,7 +497,6 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 		<br>
 		<br>
-		<br>
 		<span>Choose Environment:</span>		
 		<div id="env-icons-container">
 			<!-- Bedroom Icon -->
@@ -531,7 +530,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 			</div>			
 		</div> <!-- End of #env-icons-container -->
 
-		<br><br><br>
+		<br><br>
 		<!-- <button id="undo-button" class="artise-button">Undo</button>
 		<button id="redo-button" class="artise-button">Redo</button> -->
 
@@ -562,6 +561,10 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 		<br><br>
 
+		<button id="edit-tile-button" class="artise-button">
+			<span class="dashicons dashicons-admin-appearance"></span>
+			Edit Tile
+		</button>
 
 		<button id="save-button" class="artise-button">Save</button>
 
