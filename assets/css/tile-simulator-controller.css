@@ -947,6 +947,7 @@ li.tile-category .tile-wrapper .tile-image-container.selected img,
 		margin-bottom: 20px;
 		padding: 30px 0;
 		font-size: 15px;
+		height: auto;
 	}
 
 	.simulator-container:not(.tile-selection-expand) #tile-editor-wrapper{
