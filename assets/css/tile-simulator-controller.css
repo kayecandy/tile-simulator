@@ -565,6 +565,7 @@ li.tile-category .tile-wrapper .tile-image-container.selected img,
 	font-size: 80%;
 	margin-bottom: 13px;
 	line-height: 140%;
+	border-radius: 3px;
 
 	display: none;
 }
@@ -939,6 +940,7 @@ li.tile-category .tile-wrapper .tile-image-container.selected img,
 @media screen and (max-width: 700px){
 	.simulator-container{
 		flex-wrap: wrap;
+		overflow: hidden;
 	}
 
 	.simulator-container .simulator-section-title{
