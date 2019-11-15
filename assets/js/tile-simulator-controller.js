@@ -2173,6 +2173,11 @@ jQuery( function( $ ){
 
 	// BUTTONS
 
+	$( '#tile-selection-close-button' ).click( function(  ){
+		$( '.simulator-container' ).addClass( 'tile-selection-closed' );
+
+	} )
+
 	$( '#tile-selection-expand-button' ).click( function(  ){
 		var $this = $( this );
 		var toggleText = $this.data( 'toggle-text' );
@@ -2183,6 +2188,12 @@ jQuery( function( $ ){
 
 
 	} )
+
+	$( '#select-tile-button' ).click( function(  ){
+		$( '.simulator-container' ).removeClass( 'tile-selection-closed' );
+
+	} )
+
 
 	$( '#preview-tile-button' ).click( function(  ){
 		$( '.simulator-container' ).addClass( 'mobile-preview-section' );

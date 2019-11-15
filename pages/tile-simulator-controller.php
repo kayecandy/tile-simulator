@@ -68,12 +68,19 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 <div id="tile-editor-wrapper">
 
-	<h1 id="tile-editor-title" class="simulator-section-title">Tile Selection</h1>
+	<div id="tile-selection-mobile-buttons">
 
-	<div style="text-align: right">
+		<button id="tile-selection-close-button" class="artise-button">Close</button>
+
 		<button id="tile-selection-expand-button" class="artise-button" data-toggle-text="Collapse">Expand</button>
 		
 	</div>
+
+
+
+	<h1 id="tile-editor-title" class="simulator-section-title">Tile Selection</h1>
+
+	
 
 	<div id="tile-categories-container">
 
@@ -340,6 +347,11 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 			
 
 		<?php endif; ?>
+
+		<button id="select-tile-button" class="artise-button">
+			<span class="dashicons dashicons-admin-customizer"></span>
+			Select Tile
+		</button>
 
 		<button id="preview-tile-button" class="artise-button">
 			<span class="dashicons dashicons-visibility"></span>
