@@ -272,6 +272,8 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 	<div id="masks-container" class="dialog-column">
 		<div id="canvas-containers">
+			<div id="canvas-crosshair-container"></div>
+
 			<div id="tile-canvas-container" class="empty">
 				<div class="quadrant-rotation dashicons dashicons-image-rotate"></div>
 				<canvas class="tile-editor-background canvas-part"></canvas>

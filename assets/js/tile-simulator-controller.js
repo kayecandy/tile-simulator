@@ -1569,6 +1569,12 @@ jQuery( function( $ ){
 	var acceptedBorderShapes = ['square', undefined]
 
 	var $simulatorContainer = $( '.simulator-container' );
+	var $canvasCrosshair = $( '#canvas-crosshair-container', $simulatorContainer );
+
+	var crosshairOffset =  {
+		x: 0,
+		y: -50
+	}
 
 	window.saveCanvas = $( '#tile-save-canvas' )[0];
 
@@ -1693,7 +1699,7 @@ jQuery( function( $ ){
 
 
 		// Add Shape Data
-		$( '.simulator-container' ).attr( 'data-tile-shape', shape );
+		$simulatorContainer.attr( 'data-tile-shape', shape );
 
 		// Add Category Data
 		$('.simulator-container').attr('data-tile-category', $tileImg.parents( '.tile-image-container' ).data( 'category-slug' ) );
@@ -1875,7 +1881,7 @@ jQuery( function( $ ){
 		if( $container.hasClass( 'empty' ) )
 			return;
 
-		$( '.simulator-container' ).addClass( 'tile-canvas-touched' );
+		$simulatorContainer.addClass( 'tile-canvas-touched' );
 
 		$container.trigger( 'touchmove', {
 			pageX: e.originalEvent.touches[0].pageX, 
@@ -1891,13 +1897,35 @@ jQuery( function( $ ){
 
 		var touch = ( f ) ? f : e.originalEvent.touches[0];
 
+		
 
 		var touchX = touch.pageX - $this.offset(  ).left;
 		var touchY = touch.pageY - $this.offset(  ).top;
 
+
+		// NOTE: The  actual zoom scale is 3 in the CSS but for some reasons, 2 is what  works  here
 		$( 'canvas', $this ).css( {
-			'transform-origin': touchX + 'px ' + touchY + 'px'
+			'transform-origin': touchX + 'px ' + (touchY - (crosshairOffset.y / 2 )) + 'px'
 		} )
+
+
+		// $( 'canvas', $this ).css( {
+		// 	'transform-origin': touchX + 'px ' + touchY + 'px'
+		// } )
+
+		// touch.pageX += crosshairOffset.x;
+
+
+		$canvasCrosshair.css( {
+			left: ( touchX + crosshairOffset.x) + 'px',
+			top: ( touchY + crosshairOffset.y) + 'px'
+		} )
+
+		// $canvasCrosshair.css( {
+		// 	left: touchX + 'px',
+		// 	top: touchY + 'px'
+		// } )
+		
 
 		$this.trigger( 'mousemove', touch );
 
@@ -1910,7 +1938,7 @@ jQuery( function( $ ){
 		if( $this.hasClass( 'empty' ) )
 			return;
 
-		$( '.simulator-container' ).removeClass( 'tile-canvas-touched' );
+		$simulatorContainer.removeClass( 'tile-canvas-touched' );
 
 		$this.trigger( 'click' );
 	} )
@@ -2061,7 +2089,7 @@ jQuery( function( $ ){
 
 
 	// Grout Events
-	$( '.simulator-container' ).on( 'click', '#grout-container .grout-color-box', function(  ){
+	$simulatorContainer.on( 'click', '#grout-container .grout-color-box', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2082,7 +2110,7 @@ jQuery( function( $ ){
 	} );
 
 
-	$( '.simulator-container' ).on( 'mouseenter', '#grout-container .grout-color-box', function(  ){
+	$simulatorContainer.on( 'mouseenter', '#grout-container .grout-color-box', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2096,7 +2124,7 @@ jQuery( function( $ ){
 
 	} )
 
-	$( '.simulator-container' ).on( 'mouseleave', '#grout-container .grout-color-box', function(  ){
+	$simulatorContainer.on( 'mouseleave', '#grout-container .grout-color-box', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2112,7 +2140,7 @@ jQuery( function( $ ){
 	} )
 
 
-	$( '.simulator-container' ).on( 'click', '#grout-container #grout-thickness .artise-button', function(  ){
+	$simulatorContainer.on( 'click', '#grout-container #grout-thickness .artise-button', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2133,7 +2161,7 @@ jQuery( function( $ ){
 
 	} )
 
-	$( '.simulator-container' ).on( 'mouseenter', '#grout-container #grout-thickness .artise-button', function(  ){
+	$simulatorContainer.on( 'mouseenter', '#grout-container #grout-thickness .artise-button', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2149,7 +2177,7 @@ jQuery( function( $ ){
 
 	} )
 
-	$( '.simulator-container' ).on( 'mouseleave', '#grout-container #grout-thickness .artise-button', function(  ){
+	$simulatorContainer.on( 'mouseleave', '#grout-container #grout-thickness .artise-button', function(  ){
 		var $this = $( this );
 
 		var iTile = $( '.tile-image-container.selected' ).data( 'itile' );
@@ -2241,7 +2269,7 @@ jQuery( function( $ ){
 	// BUTTONS
 
 	$( '#tile-selection-close-button' ).click( function(  ){
-		$( '.simulator-container' ).addClass( 'tile-selection-closed' );
+		$simulatorContainer.addClass( 'tile-selection-closed' );
 
 	} )
 
@@ -2249,7 +2277,7 @@ jQuery( function( $ ){
 		var $this = $( this );
 		var toggleText = $this.data( 'toggle-text' );
 
-		$( '.simulator-container' ).toggleClass( 'tile-selection-expand' );
+		$simulatorContainer.toggleClass( 'tile-selection-expand' );
 		$this.data( 'toggle-text', $this.text(  ) );
 		$this.text( toggleText );
 
@@ -2257,17 +2285,17 @@ jQuery( function( $ ){
 	} )
 
 	$( '#select-tile-button' ).click( function(  ){
-		$( '.simulator-container' ).removeClass( 'tile-selection-closed' );
+		$simulatorContainer.removeClass( 'tile-selection-closed' );
 
 	} )
 
 
 	$( '#preview-tile-button' ).click( function(  ){
-		$( '.simulator-container' ).addClass( 'mobile-preview-section' );
+		$simulatorContainer.addClass( 'mobile-preview-section' );
 	} )
 
 	$( '#edit-tile-button' ).click( function(  ){
-		$( '.simulator-container' ).removeClass( 'mobile-preview-section' );
+		$simulatorContainer.removeClass( 'mobile-preview-section' );
 	} )
 
 	$( '#save-button' ).click( function(  ){
