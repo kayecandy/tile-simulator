@@ -1759,8 +1759,11 @@ jQuery( function( $ ){
 
 
 	// Canvas Events
-	$( '#tile-canvas-container, #border-canvas-container' ).mousemove( function( e ){
+	$( '#tile-canvas-container, #border-canvas-container' ).mousemove( function( e, f ){
 		var $container = $( this );
+
+		if( $container.hasClass( 'empty' ) )
+			return;
 
 		// Get Previous
 		var canvas = $( '.canvas-part.hovered' );
@@ -1788,11 +1791,16 @@ jQuery( function( $ ){
 
 			var ctx = this.getContext( '2d' );
 
+
+			// MousePosition
+			var pos = ( f ) ? f : e;
+
+
 			// Map Coordinates
 			var width = $this.width(  );
 			var height = $this.height(  );
-			var mouseX = ( e.offsetX / width ) * this.width;
-			var mouseY = ( e.offsetY / height ) * this.height;
+			var mouseX = ( ( pos.pageX - $container.offset(  ).left ) / width ) * this.width;
+			var mouseY = ( ( pos.pageY - $container.offset(  ).top ) / height ) * this.height;
 
 			if( ctx.getImageData( mouseX, mouseY, this.width, this.height ).data[3] != 0 ){
 				$( '.tile-editor-background', $container ).removeClass( 'hovered' );
@@ -1819,6 +1827,10 @@ jQuery( function( $ ){
 	
 
 	$( '#tile-canvas-container, #border-canvas-container' ).mouseleave( function(  ){
+
+		if( $( this ).hasClass('empty') )
+			return;
+
 		var canvas = $( '.canvas-part.hovered' );
 		var part = canvas.data( 'color-used-hover' );
 		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
@@ -1837,17 +1849,72 @@ jQuery( function( $ ){
 	} )
 
 	$( '#tile-canvas-container, #border-canvas-container' ).click( function(  ){
+
+		if( $( this ).hasClass('empty') )
+			return
+
 		var canvas = $( '.canvas-part.hovered' );
 		var part = canvas.data( 'color-used-hover' );
 		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
 		var color = box.data( 'color' );
 		var colorImage = box.data( 'color-image' );
 
-		if( canvas[0] != undefined )
-			drawColorOnlyMask( canvas[0], color, colorImage );
+		// if( canvas[0] != undefined )
+		// 	drawColorOnlyMask( canvas[0], color, colorImage );
 
 		box.click(  );
 	} )
+
+
+	// Touch Canvas Events
+	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchstart', function( e ){
+		e.preventDefault(  );
+
+		var $container = $( this );
+
+		if( $container.hasClass( 'empty' ) )
+			return;
+
+		$( '.simulator-container' ).addClass( 'tile-canvas-touched' );
+
+		$container.trigger( 'touchmove', {
+			pageX: e.originalEvent.touches[0].pageX, 
+			pageY: e.originalEvent.touches[0].pageY
+		} );
+	} )
+
+	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchmove', function( e, f ){
+		var $this = $( this );
+
+		if( $this.hasClass( 'empty' ) )
+			return;
+
+		var touch = ( f ) ? f : e.originalEvent.touches[0];
+
+
+		var touchX = touch.pageX - $this.offset(  ).left;
+		var touchY = touch.pageY - $this.offset(  ).top;
+
+		$( 'canvas', $this ).css( {
+			'transform-origin': touchX + 'px ' + touchY + 'px'
+		} )
+
+		$this.trigger( 'mousemove', touch );
+
+
+	} )
+
+	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchend', function( e ){
+		var $this = $( this );
+
+		if( $this.hasClass( 'empty' ) )
+			return;
+
+		$( '.simulator-container' ).removeClass( 'tile-canvas-touched' );
+
+		$this.trigger( 'click' );
+	} )
+
 
 
 	// Rotation event
