@@ -19,6 +19,17 @@ window.iAction = -1;
 }*/
 
 
+function getScaleFactor( ){
+	if( screen.width < 700 )
+		return 0.99;
+
+	else if( screen.width < 900 )
+		return 0.9;
+
+	return 0.7;
+}
+
+
 function getFontString( font ){
 	return font.fontStyle + ' ' + font.fontSize + 'px ' + font.fontFamily;
 }
@@ -2215,9 +2226,7 @@ jQuery( function( $ ){
 
 	$( '#environments' ).on( 'click', '#expand-env-button', function(  ){
 
-		$( 'body' ).css( {
-			overflow: 'hidden'
-		} )
+		$( 'body' ).addClass('overflow-hidden');
 
 		var envContainerActive = $( '.env-container.active' );
 		var envContainerClone = envContainerActive.clone(  );
@@ -2240,22 +2249,23 @@ jQuery( function( $ ){
 			ctxClone.drawImage( canvasActive, 0, 0, canvasActive.width, canvasActive.height );
 		} )
 
+		var scaleFactor = getScaleFactor(  );
 
 		$( '#env-expand-overlay-container #env-fullscreen' ).css( {
 			'-webkit-transform' 		: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / envContainerActive.width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / envContainerActive.width(  ) ) 
 										+ ')',
 			'-moz-transform' 			: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / envContainerActive.width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / envContainerActive.width(  ) ) 
 										+ ')',
 			'-ms-transform' 			: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / envContainerActive.width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / envContainerActive.width(  ) ) 
 										+ ')',
 			'-o-transform' 				: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / envContainerActive.width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / envContainerActive.width(  ) ) 
 										+ ')',
 			'transform' 				: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / envContainerActive.width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / envContainerActive.width(  ) ) 
 										+ ')'
 			
 		} );
@@ -2304,28 +2314,27 @@ jQuery( function( $ ){
 			return;
 		}
 
-		$( 'body' ).css( {
-			overflow: 'hidden'
-		} )
-
+		$( 'body' ).addClass('overflow-hidden');
 
 		$( '#save-overlay-container' ).addClass( 'open' );
 
+		var scaleFactor = getScaleFactor(  );
+
 		$( '#save-overlay-container .simulator-overlay-content' ).css( {
 			'-webkit-transform' 		: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / $( '#tile-save-canvas' ).width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / $( '#tile-save-canvas' ).width(  ) ) 
 										+ ')',
 			'-moz-transform' 			: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / $( '#tile-save-canvas' ).width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / $( '#tile-save-canvas' ).width(  ) ) 
 										+ ')',
 			'-ms-transform' 			: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / $( '#tile-save-canvas' ).width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / $( '#tile-save-canvas' ).width(  ) ) 
 										+ ')',
 			'-o-transform' 				: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / $( '#tile-save-canvas' ).width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / $( '#tile-save-canvas' ).width(  ) ) 
 										+ ')',
 			'transform' 				: 'translate( -50%, -50% ) scale(' 
-										+ ( ( $( window ).width(  ) * .7 ) / $( '#tile-save-canvas' ).width(  ) ) 
+										+ ( ( $( window ).width(  ) * scaleFactor ) / $( '#tile-save-canvas' ).width(  ) ) 
 										+ ')'
 			
 		} );
@@ -2369,11 +2378,13 @@ jQuery( function( $ ){
 
 	$( '#submit-details-back-button' ).click( function(  ){
 		$( '#submit-details-overlay' ).removeClass( 'shown' );
+		$( '#save-overlay-container' ).removeClass( 'submit-details' );
+
 	} )
 
 	$( '#submit-button' ).click( function(  ){
 		$( '#submit-details-overlay' ).addClass( 'shown' );
-
+		$( '#save-overlay-container' ).addClass( 'submit-details' );
 
 		var colors = [];
 
@@ -2471,6 +2482,8 @@ jQuery( function( $ ){
 
 	$( '#save-overlay-container' ).click( function(  ){
 		$( '#submit-details-overlay' ).removeClass( 'shown' );
+		$( '#save-overlay-container' ).removeClass( 'submit-details' );
+		
 	} )
 
 
@@ -2482,9 +2495,7 @@ jQuery( function( $ ){
 	$( '.simulator-overlay-container' ).click( function(  ){
 		$( this ).removeClass( 'open' );
 
-		$( 'body' ).css( {
-			overflow: 'auto'
-		} )
+		$( 'body' ).removeClass('overflow-hidden');
 
 	} );
 

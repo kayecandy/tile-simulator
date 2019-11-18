@@ -1,3 +1,11 @@
+body.overflow-hidden{
+	overflow: hidden !important;
+}
+
+.scroll-wrapper > .scroll-content{
+	-webkit-overflow-scrolling: touch;
+}
+
 
 .simulator-container .simulator-section-title{
 	padding: 50px 0;

@@ -33,8 +33,6 @@ if( defined( 'GOOGLE_RECAPTCHA_KEY' ) && defined( 'GOOGLE_RECAPTCHA_SECRET' ) ){
 		<div id="submit-details-overlay">
 			<div id="submit-details-back-button"><span class="dashicons dashicons-arrow-left-alt2"></span>Back</div>
 			<h1>Your Details</h1>
-			<br><br>
-
 
 			<table>
 				<tr>
@@ -67,7 +65,12 @@ if( defined( 'GOOGLE_RECAPTCHA_KEY' ) && defined( 'GOOGLE_RECAPTCHA_SECRET' ) ){
 						</select>
 
 					</td>
-					<td>&nbsp;&nbsp;&nbsp;If other, please specify:</td>
+					
+					
+				</tr>
+
+				<tr>
+					<td>If other, please specify:</td>
 					<td><input id="submit-quantity-other-input" type="text"></td>
 				</tr>
 				<tr>
