@@ -1582,6 +1582,13 @@ jQuery( function( $ ){
 	var $simulatorContainer = $( '.simulator-container' );
 	var $canvasCrosshair = $( '#canvas-crosshair-container', $simulatorContainer );
 
+
+	var $tileCanvasContainer = $( '#tile-canvas-container' );
+	var $borderCanvasContainer = $( '#border-canvas-container' );
+
+	var $canvasContainer = $( '#canvas-containers', $simulatorContainer );
+	var $tileBorderCanvasContainers = $tileCanvasContainer.add( $borderCanvasContainer );
+
 	var crosshairOffset =  {
 		x: 0,
 		y: -50
@@ -1735,7 +1742,7 @@ jQuery( function( $ ){
 		window.selectedMask = undefined;
 
 
-		$( '#tile-canvas-container' ).removeClass( 'empty' );
+		$tileCanvasContainer.removeClass( 'empty' );
 
 		$( '.tile-image-container.selected' ).removeClass( 'selected' );
 		// $( this ).parents( '.tile-image-container' ).addClass( 'selected' );
@@ -1776,27 +1783,28 @@ jQuery( function( $ ){
 
 
 	// Canvas Events
-	$( '#tile-canvas-container, #border-canvas-container' ).mousemove( function( e, f ){
+	$tileBorderCanvasContainers.mousemove( function( e, f ){
 		var $container = $( this );
 
 		if( $container.hasClass( 'empty' ) )
 			return;
 
 		// Get Previous
-		var canvas = $( '.canvas-part.hovered' );
-		var part = canvas.data( 'color-used-hover' );
-		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
-		var color = box.data( 'color' );
-		var colorImage = box.data( 'color-image' );
+		var $canvas = $( '.canvas-part.hovered' );
+		var part = $canvas.data( 'color-used-hover' );
+		var $box = $( '.color-used-box[data-color-used-hover='+part+']' );
+		var color = $box.data( 'color' );
+		var colorImage = $box.data( 'color-image' );
 
 
-
-		if( canvas[0] != undefined )
-			drawColorOnlyMask( canvas[0], color, colorImage );
+		// Reomve Previous Hatches
+		if( $canvas.length )
+			drawColorOnlyMask( $canvas[0], color, colorImage );
 
 		// Remove Previous
 		$( '.tile-editor-pattern' ).removeClass( 'hovered' );
 		$( '.color-used-box' ).removeClass( 'hovered' )
+
 
 
 		// Get Hovered
@@ -1820,6 +1828,8 @@ jQuery( function( $ ){
 			var mouseY = ( ( pos.pageY - $container.offset(  ).top ) / height ) * this.height;
 
 			if( ctx.getImageData( mouseX, mouseY, this.width, this.height ).data[3] != 0 ){
+
+				// Assign new
 				$( '.tile-editor-background', $container ).removeClass( 'hovered' );
 				$( this ).addClass( 'hovered' );
 
@@ -1831,19 +1841,20 @@ jQuery( function( $ ){
 
 
 		// Update UI
-		var canvas = $( '.canvas-part.hovered' );
-		var part = canvas.data( 'color-used-hover' );
-		var box = $( '.color-used-box[data-color-used-hover='+part+']' );
+		var $canvas = $( '.canvas-part.hovered' );
+		var part = $canvas.data( 'color-used-hover' );
+		var $box = $( '.color-used-box[data-color-used-hover='+part+']' );
 
 
-		if( canvas.length > 0 )
-			drawHatches( canvas[0] );
+		if( $canvas.length > 0 )
+			drawHatches( $canvas[0] );
 
-		box.addClass( 'hovered' );
+
+		$box.addClass( 'hovered' );
 	} );
 	
 
-	$( '#tile-canvas-container, #border-canvas-container' ).mouseleave( function(  ){
+	$tileBorderCanvasContainers.mouseleave( function(  ){
 
 		if( $( this ).hasClass('empty') )
 			return;
@@ -1865,7 +1876,7 @@ jQuery( function( $ ){
 		$( '.color-used-box' ).removeClass( 'hovered' )
 	} )
 
-	$( '#tile-canvas-container, #border-canvas-container' ).click( function(  ){
+	$tileBorderCanvasContainers.click( function(  ){
 
 		if( $( this ).hasClass('empty') )
 			return
@@ -1884,7 +1895,7 @@ jQuery( function( $ ){
 
 
 	// Touch Canvas Events
-	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchstart', function( e ){
+	$tileBorderCanvasContainers.on( 'touchstart', function( e ){
 		e.preventDefault(  );
 
 		var $container = $( this );
@@ -1900,8 +1911,8 @@ jQuery( function( $ ){
 		} );
 	} )
 
-	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchmove', function( e, f ){
-		var $this = $( this );
+	$tileBorderCanvasContainers.on( 'touchmove', function( e, f ){
+		var $this = $tileBorderCanvasContainers;
 
 		if( $this.hasClass( 'empty' ) )
 			return;
@@ -1910,40 +1921,74 @@ jQuery( function( $ ){
 
 		
 
-		var touchX = touch.pageX - $this.offset(  ).left;
-		var touchY = touch.pageY - $this.offset(  ).top;
+		var touchX = touch.pageX - $canvasContainer.offset(  ).left;
+		var touchY = touch.pageY - $canvasContainer.offset(  ).top;
 
 
-		// NOTE: The  actual zoom scale is 3 in the CSS but for some reasons, 2 is what  works  here
-		$( 'canvas', $this ).css( {
-			'transform-origin': touchX + 'px ' + (touchY - (crosshairOffset.y / 2 )) + 'px'
-		} )
+		if( !$simulatorContainer.hasClass( 'border-active' ) ){
+			// NOTE: The  actual zoom scale is 3 in the CSS but for some reasons, 2 is what  works  here
+			var transformOrigin = touchX + 'px ' + (touchY - (crosshairOffset.y / 2 )) + 'px';
+
+			$( 'canvas', $tileCanvasContainer ).css( {
+				'-webkit-transform-origin': transformOrigin,
+				   '-moz-transform-origin': transformOrigin,
+				    '-ms-transform-origin': transformOrigin,
+				     '-o-transform-origin': transformOrigin,
+				        'transform-origin': transformOrigin
+			} )
+
+			$tileCanvasContainer.trigger( 'mousemove', touch );
+
+		}else{
+			// NOTE: The  actual zoom scale is 3 in the CSS but for some reasons, 2 is what  works  here
+			var transformOrigin = touchX + 'px ' + (touchY - (crosshairOffset.y / 2 )) + 'px';
+
+			$( 'canvas', $borderCanvasContainer ).css( {
+				'-webkit-transform-origin': transformOrigin,
+				   '-moz-transform-origin': transformOrigin,
+				    '-ms-transform-origin': transformOrigin,
+				     '-o-transform-origin': transformOrigin,
+				        'transform-origin': transformOrigin
+			} )
 
 
-		// $( 'canvas', $this ).css( {
-		// 	'transform-origin': touchX + 'px ' + touchY + 'px'
-		// } )
+			//  Repeat for tile
+			var tileTouchX = touch.pageX - $tileCanvasContainer.offset(  ).left 
+			var tileTouchY = touch.pageY - $tileCanvasContainer.offset(  ).top
 
-		// touch.pageX += crosshairOffset.x;
+			// NOTE: The  actual zoom scale is 3 in the CSS but for some reasons, 2 is what  works  here
+			transformOrigin = tileTouchX + 'px ' + (tileTouchY - (crosshairOffset.y / 2 )) + 'px';
 
+
+			$( 'canvas', $tileCanvasContainer ).css( {
+				'-webkit-transform-origin': transformOrigin,
+				   '-moz-transform-origin': transformOrigin,
+				    '-ms-transform-origin': transformOrigin,
+				     '-o-transform-origin': transformOrigin,
+				        'transform-origin': transformOrigin
+			} )
+
+
+			if( tileTouchX < 0 || tileTouchY < 0 || tileTouchX > $tileCanvasContainer.width(  ) || tileTouchY > $tileCanvasContainer.height(  ) ){
+				$borderCanvasContainer.trigger( 'mousemove', touch );
+			}else{
+				$tileCanvasContainer.trigger( 'mousemove', touch );			
+			}
+
+
+		}
+
+		
 
 		$canvasCrosshair.css( {
 			left: ( touchX + crosshairOffset.x) + 'px',
 			top: ( touchY + crosshairOffset.y) + 'px'
 		} )
 
-		// $canvasCrosshair.css( {
-		// 	left: touchX + 'px',
-		// 	top: touchY + 'px'
-		// } )
-		
-
-		$this.trigger( 'mousemove', touch );
-
 
 	} )
 
-	$( '#tile-canvas-container, #border-canvas-container' ).on( 'touchend', function( e ){
+	$tileBorderCanvasContainers.on( 'touchend', function( e ){
 		var $this = $( this );
 
 		if( $this.hasClass( 'empty' ) )
@@ -1957,7 +2002,7 @@ jQuery( function( $ ){
 
 
 	// Rotation event
-	$( '#tile-canvas-container' ).mousemove( function( e ){
+	$tileCanvasContainer.mousemove( function( e ){
 		// Get quadrant
 		var $this = $( this );
 

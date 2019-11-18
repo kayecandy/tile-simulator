@@ -477,7 +477,8 @@ li.tile-category .tile-wrapper .tile-image-container.selected img,
 	position: absolute;
 	cursor: pointer;
 	/*overflow: hidden;*/
-	background: white;
+	/*background: white;*/
+	background: none;
 	z-index: 10;
 
 }
@@ -568,8 +569,7 @@ li.tile-category .tile-wrapper .tile-image-container.selected img,
 /* Mobile View Tile */
 
 
-.simulator-container.tile-canvas-touched #tile-canvas-container,
-.simulator-container.tile-canvas-touched #border-canvas-container{
+.simulator-container.tile-canvas-touched #canvas-containers{
 	overflow: hidden;
 }
 
