@@ -1,19 +1,19 @@
 <?php
 defined( 'ABSPATH' ) or die ( 'I\'m a plugin! Please don\'t access me directly!' );
 
-wp_enqueue_style( 'artise-tile-simulator-controller-style', plugins_url( 'artise-simulator/assets/css/tile-simulator-controller.css' ), array( 'dashicons' ) );
+wp_enqueue_style( 'artise-tile-simulator-controller-style', plugins_url( 'tile-simulator/assets/css/tile-simulator-controller.css' ), array( 'dashicons' ) );
 
 
-wp_enqueue_style( 'scrollbar-js-style', plugins_url( 'artise-simulator/assets/css/jquery.scrollbar.css' ) );
+wp_enqueue_style( 'scrollbar-js-style', plugins_url( 'tile-simulator/assets/css/jquery.scrollbar.css' ) );
 
-// wp_enqueue_script( 'iris', plugins_url( 'artise-simulator/assets/js/iris.min.js' ), array( 'jquery', 'jquery-ui-widget', 'jquery-ui-slider' ) );
+// wp_enqueue_script( 'iris', plugins_url( 'tile-simulator/assets/js/iris.min.js' ), array( 'jquery', 'jquery-ui-widget', 'jquery-ui-slider' ) );
 
-wp_enqueue_script( 'scrollbar-js', plugins_url( 'artise-simulator/assets/js/jquery.scrollbar.min.js' ), array( 'jquery' ) );
+wp_enqueue_script( 'scrollbar-js', plugins_url( 'tile-simulator/assets/js/jquery.scrollbar.min.js' ), array( 'jquery' ) );
 
-wp_enqueue_script( 'artise-grout-shapes', plugins_url( 'artise-simulator/assets/js/grout-shapes.js' ), array( 'jquery' ) );
+wp_enqueue_script( 'artise-grout-shapes', plugins_url( 'tile-simulator/assets/js/grout-shapes.js' ), array( 'jquery' ) );
 
 
-wp_enqueue_script( 'artise-tile-simulator-controller-script', plugins_url( 'artise-simulator/assets/js/tile-simulator-controller.js' ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-dialog', 'artise-grout-shapes' ) );
+wp_enqueue_script( 'artise-tile-simulator-controller-script', plugins_url( 'tile-simulator/assets/js/tile-simulator-controller.js' ), array( 'jquery', 'jquery-ui-core', 'jquery-ui-dialog', 'artise-grout-shapes' ) );
 
 
 wp_localize_script( 'artise-tile-simulator-controller-script', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
@@ -57,7 +57,8 @@ if( sizeof( $border_category ) > 0 ){
 
 
 function tile_simulator_overlay(  ){
-	include 'tile-simulator-overlay.php';
+	// TODO: Cleanup path
+	include plugin_dir_path(__FILE__) . '/../overlays/tile-simulator-overlay.php';
 }
 
 add_action( 'wp_footer', 'tile_simulator_overlay' );
@@ -327,7 +328,7 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 		</div>
 		
 
-		<img id="tile-canvas-hatches" style="display: none" src="<?php echo plugins_url( 'artise-simulator/assets/images/misc/hatch.png' ) ?>">
+		<img id="tile-canvas-hatches" style="display: none" src="<?php echo plugins_url( 'tile-simulator/assets/images/misc/hatch.png' ) ?>">
 
 		<span id="selected-tile-title"></span>
 
@@ -430,6 +431,10 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 		jQuery( imgClip ).load( function(  ){
 			nMask.loaded++;
 			window.loader.progress( nMask.loaded / nMask.total );
+		} )
+
+		jQuery( imgClip ).error( function( err ){
+			console.log(err);
 		} )
 
 		return imgClip;

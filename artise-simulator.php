@@ -17,9 +17,9 @@ define( 'BORDER_CATEGORY_SLUG', 'border-collection' );
 
 
 function admin_style(  ){
-	wp_enqueue_style( 'artise-simulator-admin-style', plugins_url( 'assets/css/admin.css', __FILE__ ) );
+	wp_enqueue_style( 'tile-simulator-admin-style', plugins_url( 'assets/css/admin.css', __FILE__ ) );
 
-	wp_enqueue_script( 'block-ui', plugins_url( 'artise-simulator/assets/js/jquery.blockUI.js' ), array( 'jquery' ) );
+	wp_enqueue_script( 'block-ui', plugins_url( 'tile-simulator/assets/js/jquery.blockUI.js' ), array( 'jquery' ) );
 	
 }
 add_action( 'admin_enqueue_scripts', 'admin_style' );

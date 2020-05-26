@@ -557,7 +557,7 @@
 		if( $post->post_type !== 'artise-submissions' )
 			return;
 
-		wp_enqueue_style( 'admin-artise-simulator-submission-style', plugins_url( 'artise-simulator/assets/css/admin-artise-simulator-submission.css' ) );
+		wp_enqueue_style( 'admin-tile-simulator-submission-style', plugins_url( 'tile-simulator/assets/css/admin-tile-simulator-submission.css' ) );
 
 
 

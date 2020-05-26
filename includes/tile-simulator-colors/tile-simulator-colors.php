@@ -139,9 +139,9 @@ function enqueue_artise_tile_color_scripts( $hook ){
 	wp_enqueue_media();
 
 
-	wp_enqueue_style( 'admin-artise-simulator-color-style', plugins_url( 'artise-simulator/assets/css/admin-artise-simulator-color.css' ) );
+	wp_enqueue_style( 'admin-tile-simulator-color-style', plugins_url( 'tile-simulator/assets/css/admin-tile-simulator-color.css' ) );
 
-	wp_enqueue_script( 'admin-artise-simulator-color-script', plugins_url( 'artise-simulator/assets/js/admin-artise-simulator-color.js' ), array( 'jquery', 'wp-color-picker' ) );
+	wp_enqueue_script( 'admin-tile-simulator-color-script', plugins_url( 'tile-simulator/assets/js/admin-tile-simulator-color.js' ), array( 'jquery', 'wp-color-picker' ) );
 }
 add_action( 'admin_enqueue_scripts', 'enqueue_artise_tile_color_scripts' );
 

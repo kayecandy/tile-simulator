@@ -39,7 +39,7 @@ function register_artise_tile_post(  ){
 			'has_archive'			=> true,
 			'supports'				=> array( 'title', 'excerpt' ),
 			'menu_icon'				=> 'dashicons-screenoptions'
-			// 'show_in_menu'			=> 'artise-simulator'
+			// 'show_in_menu'			=> 'tile-simulator'
 		)
 	);
 }
@@ -195,7 +195,7 @@ function artise_tile_mask_meta_box(  ){
 		<script type="text/javascript">
 			window.postId = <?php echo $post->ID ?>;
 			var bgColor = '<?php echo $color ?>';
-			var bgImg = $( '<?php echo $color_img_tag ?>')[0];
+			var bgImg = jQuery( '<?php echo $color_img_tag ?>')[0];
 
 			var groutShape = '<?php echo $tile_grout ?>';
 
@@ -350,11 +350,11 @@ function enqueue_artise_tile_scripts( $hook ){
 	add_thickbox(  );
 
 
-	wp_enqueue_style( 'admin-artise-simulator-tile-style', plugins_url( 'artise-simulator/assets/css/admin-artise-simulator-tile.css' ) );
+	wp_enqueue_style( 'admin-tile-simulator-tile-style', plugins_url( 'tile-simulator/assets/css/admin-tile-simulator-tile.css' ) );
 
-	wp_enqueue_script( 'artise-grout-shapes', plugins_url( 'artise-simulator/assets/js/grout-shapes.js' ), array( 'jquery' ) );
+	wp_enqueue_script( 'artise-grout-shapes', plugins_url( 'tile-simulator/assets/js/grout-shapes.js' ), array( 'jquery' ) );
 
-	wp_enqueue_script( 'admin-artise-simulator-tile-script', plugins_url( 'artise-simulator/assets/js/admin-artise-simulator-tile.js' ), array( 'jquery', 'artise-grout-shapes' ) );
+	wp_enqueue_script( 'admin-tile-simulator-tile-script', plugins_url( 'tile-simulator/assets/js/admin-tile-simulator-tile.js' ), array( 'jquery', 'artise-grout-shapes' ) );
 
 
 

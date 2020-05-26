@@ -1,5 +1,5 @@
 <div id="tile-simulator-header-container">
-	<img id="logo" src="<?php echo plugins_url( 'artise-simulator/assets/images/misc/logo.png' ) ?>">
+	<img id="logo" src="<?php echo plugins_url( 'tile-simulator/assets/images/misc/logo.png' ) ?>">
 
 
 	<!-- <div id="search-bar">

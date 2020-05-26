@@ -2,13 +2,13 @@
 defined( 'ABSPATH' ) or die ( 'I\'m a plugin! Please don\'t access me directly!' );
 
 
-wp_enqueue_style( 'artise-tile-simulator-shared-style', plugins_url( 'artise-simulator/assets/css/tile-simulator-shared.css' ) );
-wp_enqueue_style( 'artise-tile-simulator-2d-style', plugins_url( 'artise-simulator/assets/css/tile-simulator-2d.css' ) );
+wp_enqueue_style( 'artise-tile-simulator-shared-style', plugins_url( 'tile-simulator/assets/css/tile-simulator-shared.css' ) );
+wp_enqueue_style( 'artise-tile-simulator-2d-style', plugins_url( 'tile-simulator/assets/css/tile-simulator-2d.css' ) );
 
 
-wp_enqueue_script( 'three-js', plugins_url( 'artise-simulator/assets/js/three.min.js' ), array( 'jquery' ) );
+wp_enqueue_script( 'three-js', plugins_url( 'tile-simulator/assets/js/three.min.js' ), array( 'jquery' ) );
 
-wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simulator/assets/js/tile-simulator-2d.js' ), array( 'jquery', 'three-js' ) );
+wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'tile-simulator/assets/js/tile-simulator-2d.js' ), array( 'jquery', 'three-js' ) );
 
 
 
@@ -19,9 +19,9 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 <div id="simulator-2d-container" class="simulator-container" data-tile-shape="square">
 
-	<img id="simulator-logo" style="display: none" src="<?php echo plugins_url( 'artise-simulator/assets/images/misc/logo.png' ) ?>">
+	<img id="simulator-logo" style="display: none" src="<?php echo plugins_url( 'tile-simulator/assets/images/misc/logo.png' ) ?>">
 
-	<?php require_once( 'tile-simulator-controller.php' ); ?>
+	<?php require_once( 'page-modules/controller/tile-simulator-controller.php' ); ?>
 
 
 	<div id="view-environments-container">
@@ -67,7 +67,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 				<!-- Image -->
 				<div class="env-image-container" class="container">
-					<img src="<?php echo plugins_url( 'artise-simulator/assets/images/env/bedroom_old2.png' ) ?>">
+					<img src="<?php echo plugins_url( 'tile-simulator/assets/images/env/bedroom_old2.png' ) ?>">
 				</div>
 
 				<!-- Parts -->
@@ -116,7 +116,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 				<!-- Image -->
 				<div class="env-image-container" class="container">
-					<img src="<?php echo plugins_url( 'artise-simulator/assets/images/env/living_room.png' ) ?>">
+					<img src="<?php echo plugins_url( 'tile-simulator/assets/images/env/living_room.png' ) ?>">
 				</div>
 
 				<!-- Parts -->
@@ -181,7 +181,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 				<!-- Image -->
 				<div class="env-image-container" class="container">
-					<img src="<?php echo plugins_url( 'artise-simulator/assets/images/env/kitchen.png' ) ?>">
+					<img src="<?php echo plugins_url( 'tile-simulator/assets/images/env/kitchen.png' ) ?>">
 				</div>
 
 				<!-- Parts -->
@@ -284,7 +284,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 				<!-- Image -->
 				<div class="env-image-container" class="container">
-					<img src="<?php echo plugins_url( 'artise-simulator/assets/images/env/bathroom.png' ) ?>">
+					<img src="<?php echo plugins_url( 'tile-simulator/assets/images/env/bathroom.png' ) ?>">
 				</div>
 
 				<!-- Parts -->
@@ -395,7 +395,7 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 
 				<!-- Image -->
 				<div class="env-image-container" class="container">
-					<img src="<?php echo plugins_url( 'artise-simulator/assets/images/env/commercial_old.png' ) ?>">
+					<img src="<?php echo plugins_url( 'tile-simulator/assets/images/env/commercial_old.png' ) ?>">
 				</div>
 
 				<!-- Parts -->
@@ -501,32 +501,32 @@ wp_enqueue_script( 'artise-tile-simulator-2d-script', plugins_url( 'artise-simul
 		<div id="env-icons-container">
 			<!-- Bedroom Icon -->
 			<div id="bedroom-env-button" class="env-icons-image-container" data-env="bedroom">
-				<img src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_bedroom_icon.png' ) ?>">
-				<img class="hover" src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_bedroom_hover_icon.png' ) ?>">
+				<img src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_bedroom_icon.png' ) ?>">
+				<img class="hover" src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_bedroom_hover_icon.png' ) ?>">
 			</div>
 
 			<!-- Living room icon -->
 			<div id="living-room-env-button" class="env-icons-image-container" data-env="living-room">
-				<img src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_living_room_icon.png' ) ?>">
-				<img class="hover" src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_living_room_hover_icon.png' ) ?>">
+				<img src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_living_room_icon.png' ) ?>">
+				<img class="hover" src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_living_room_hover_icon.png' ) ?>">
 			</div>
 
 			<!-- Kitchen Icon -->
 			<div id="kitchen-env-button" class="env-icons-image-container" data-env="kitchen">
-				<img src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_kitchen_icon.png' ) ?>">
-				<img class="hover" src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_kitchen_hover_icon.png' ) ?>">
+				<img src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_kitchen_icon.png' ) ?>">
+				<img class="hover" src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_kitchen_hover_icon.png' ) ?>">
 			</div>
 
 			<!-- Bathroom Icon -->
 			<div id="bathroom-env-button" class="env-icons-image-container" data-env="bathroom">
-				<img src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_bathroom_icon.png' ) ?>">
-				<img class="hover" src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_bathroom_hover_icon.png' ) ?>">
+				<img src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_bathroom_icon.png' ) ?>">
+				<img class="hover" src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_bathroom_hover_icon.png' ) ?>">
 			</div>
 
 			<!-- Commercial Room Icon -->
 			<div id="commercial-env-button" class="env-icons-image-container" data-env="commercial">
-				<img src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_commercial_room_icon.png' ) ?>">
-				<img class="hover" src="<?php echo plugins_url( 'artise-simulator/assets/images/icons/env_commercial_room_hover_icon.png' ) ?>">
+				<img src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_commercial_room_icon.png' ) ?>">
+				<img class="hover" src="<?php echo plugins_url( 'tile-simulator/assets/images/icons/env_commercial_room_hover_icon.png' ) ?>">
 			</div>			
 		</div> <!-- End of #env-icons-container -->
 

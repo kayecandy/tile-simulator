@@ -42,9 +42,9 @@ function include_pages(  ){
 
 	foreach ($ARTISE_SIMULATOR_PAGES as $page => $page_title) {
 		if( is_page( $page ) ){
-			wp_enqueue_style( 'artise-simulator-style', plugins_url( 'assets/css/style.css', __FILE__ ) );
+			wp_enqueue_style( 'tile-simulator-style', plugins_url( 'assets/css/style.css', __FILE__ ) );
 
-			wp_enqueue_script( 'block-ui', plugins_url( 'artise-simulator/assets/js/jquery.blockUI.js' ), array( 'jquery' ) );
+			wp_enqueue_script( 'block-ui', plugins_url( 'tile-simulator/assets/js/jquery.blockUI.js' ), array( 'jquery' ) );
 
 
 
