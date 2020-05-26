@@ -9,13 +9,14 @@ jQuery(document).ready(function ($) {
     window.loader.progress(nMask.loaded / nMask.total);
   });
 
-  $(window).error(function (err) {
-    console.log(err);
-  });
+  // TODO: Handle error
+  // $(window).error(function (err) {
+  //   console.log(err);
+  // });
 
-  $(".env-image-container img").error(function (err) {
-    console.log(err);
-  });
+  // $(".env-image-container img").error(function (err) {
+  //   console.log(err);
+  // });
 
   // Load Scripts
   window.selected = $("#tiled-wall-container");
