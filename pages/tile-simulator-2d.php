@@ -30,47 +30,13 @@ wp_enqueue_script('artise-tile-simulator-2d-script', plugins_url('tile-simulator
             <span id="expand-env-button" class="dashicons dashicons-editor-expand env-button"></span>
 
 
-            <!-- TILED -->
-            <div id="tiled-simulator" class="env-container active" data-env="tiled">
-
-                <div id="tiled-image-container" class="env-image-container"></div>
-
-                <div id="tiled-wall-container" class="wall wall-container bg-container selected">
-                    <div class="border-background" data-bg-part="top"></div>
-                    <div class="border-background" data-bg-part="bottom"></div>
-                    <div class="border-background" data-bg-part="left"></div>
-                    <div class="border-background" data-bg-part="right"></div>
-
-                    <div class="border-background corner" data-bg-part="corner-tl"></div>
-                    <div class="border-background corner" data-bg-part="corner-tr"></div>
-                    <div class="border-background corner" data-bg-part="corner-bl"></div>
-                    <div class="border-background corner" data-bg-part="corner-br"></div>
-
-
-                    <div class="background"></div>
-                </div>
-
-            </div>
-
-
-            <!-- BEDROOM -->
-            <?php include 'page-modules/environments/env-bedroom.php'?>
-
-            <!-- LIVING ROOM -->
-            <?php include 'page-modules/environments/env-living-room.php'?>
-
-            <!-- KITCHEN -->
-            <?php include 'page-modules/environments/env-kitchen.php'?>
-
-
-            <!-- BATHROOM -->
-            <?php include 'page-modules/environments/env-bathroom.php'?>
+            <!-- Tile Shapes -->
+            <?php include 'page-modules/tile-shapes/tile-simulator-shapes.php'?>
 
 
 
-
-            <!-- COMMERCIAL -->
-            <?php include 'page-modules/environments/env-commercial.php'?>
+            <!-- Environments -->
+            <?php include 'page-modules/environments/index.php'?>
 
 
 
