@@ -6,7 +6,7 @@
 Plugin Name: Tile Simulator
 Description: Tile Simulator is a custom plugin for Lili Cement Tiles. The simulator allows users to customize tile colors, visualize available tiles in different environments and export tiles for purchase.
 Author: Candice Canoso
-Version: 2.0
+Version: 2.1
 Author URI: http://www.cndce.me/
  */
 
