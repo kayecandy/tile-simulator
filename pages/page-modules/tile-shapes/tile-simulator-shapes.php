@@ -5,7 +5,7 @@ include 'tile_shape_selection.php';
 
 ?>
 
-<div id="tile-shapes">
+<div id="tile-shapes" style="display: none;">
 
     <div id="tile-shape-editor">
 
