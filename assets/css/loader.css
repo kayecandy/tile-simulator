@@ -4,7 +4,7 @@ body:not(.loaded) {
 
 #loader-container {
   position: fixed;
-  z-index: 100000;
+  z-index: 1000000;
   background: white;
   top: 0;
   left: 0;

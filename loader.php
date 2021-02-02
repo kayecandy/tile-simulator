@@ -11,7 +11,7 @@ wp_enqueue_script( 'artise-tile-simulator-loader-script', plugins_url( 'tile-sim
 
 <?php function artise_get_loader(){ ?>
 
-	<div id="loader-container">
+	<div id="loader-container" style="position: fixed; z-index: 1000000; background: white; top: 0; left: 0; width: 100vw; height: 100vh; text-align: center;">
 		<div class="loader-content">
 			<img id="loader-logo" src="<?php echo plugins_url( 'tile-simulator/assets/images/misc/logo.png' ) ?>">
 
