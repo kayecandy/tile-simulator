@@ -426,6 +426,10 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 	function loadMask( maskSrc ){
 		var imgClip = new Image(  );
 		imgClip.setAttribute( 'crossOrigin', 'anonymous' );
+
+		if(!maskSrc)
+			return imgClip;
+
 		imgClip.src = maskSrc;
 
 		jQuery( imgClip ).load( function(  ){

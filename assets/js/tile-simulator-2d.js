@@ -114,6 +114,14 @@ jQuery(document).ready(function ($) {
   }
 
   function render(canvas, scene) {
+    // Reset height since height would initialize to 0
+    var $canvas = $(canvas);
+    canvas.height = (canvas.width * $canvas.outerHeight()) / $canvas.outerWidth();
+    
+    if(!canvas.height){
+      return;
+    }
+
     camera.aspect = canvas.width / canvas.height;
 
     renderer.setSize(canvas.width, canvas.height);
@@ -144,6 +152,8 @@ jQuery(document).ready(function ($) {
 
       this.width = width;
       this.height = height;
+
+      console.log('HEIGHT',$canvas, $canvas.outerHeight());
 
       var scene = new THREE.Scene();
 
@@ -268,12 +278,12 @@ jQuery(document).ready(function ($) {
 
       $canvas.data("render", function () {
         // renderer.render( scene, camera );
+        
         render(canvas, scene);
       });
 
       // scene.add( borderPlane )
       // renderer.render( scene, camera );
-      render(canvas, scene);
 
       this.changeTile = function (tileSrc, tileScale) {
         var img = new Image();
@@ -362,6 +372,11 @@ jQuery(document).ready(function ($) {
         // renderer.render( scene, camera );
         render(canvas, scene);
       };
+
+      // Render only if active
+      if($canvas.parents('.env-container').hasClass('active'))
+        render(canvas, scene);
+
     });
   }
 

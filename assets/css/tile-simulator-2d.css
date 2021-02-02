@@ -495,8 +495,10 @@ body{
 
 
 
-.env-container .wall-container .background{
-	background-color: gray;
+.env-container .wall-container .background,
+.env-container .wall-container.three-bg-container{
+
+	background-color: beige;
 }
 
 .env-container .floor-container .background,
