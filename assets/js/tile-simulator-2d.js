@@ -153,7 +153,7 @@ jQuery(document).ready(function ($) {
       this.width = width;
       this.height = height;
 
-      console.log('HEIGHT',$canvas, $canvas.outerHeight());
+      // console.log('HEIGHT',$canvas, $canvas.outerHeight());
 
       var scene = new THREE.Scene();
 

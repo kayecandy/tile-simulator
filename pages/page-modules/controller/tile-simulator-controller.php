@@ -218,7 +218,9 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 												'color_id'		=> $mask_color->ID,
 
-												'color_name'	=> $mask_color->post_title
+												'color_name'	=> $mask_color->post_title,
+
+												'mask_id'		=> $attachment->ID
 
 											);
 
