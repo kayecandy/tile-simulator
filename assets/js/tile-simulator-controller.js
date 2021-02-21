@@ -2046,7 +2046,7 @@ jQuery( function( $ ){
 	} );
 
 	// Color Editor Events
-	$( '#tile-color-editor-dialog' ).on( 'hover', '#color-used .color-used-box', function( e ){
+	$( '#tile-color-editor-dialog' ).on( 'mouseenter mouseleave', '#color-used .color-used-box', function( e ){
 		var $colorUsedBox = $( this );
 		var dataHover = $colorUsedBox.data( 'color-used-hover' );
 		var colorId = $colorUsedBox.data( 'color-id' );
