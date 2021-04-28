@@ -170,7 +170,7 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 								?>
 								<div 
-									class="tile-image-container tile-image-cointainer-<?php echo $tile_count ?>" 
+									class="tile-image-container tile-image-container-<?php echo $tile_count ?> loading" 
 									data-tile-id="<?php echo $tile->ID ?>"
 									data-itile="<?php echo $itile ?>"
 									data-tile-name="<?php echo htmlentities( $tile->post_title ) ?>"
@@ -180,12 +180,14 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 									data-category-slug="<?php echo $tile_category->slug ?>"
 									
 								>
-									<img 
-										src="<?php echo $tile_img ?>" 
-										width="75" height="75" 
-										data-shape="<?php echo $shape ?>"
-										data-is-hex="<?php echo $is_hex ?>"
-										data-tile-scale="<?php echo get_post_meta( $tile->ID, 'artise-tile-scale', true ) ?>">
+									<div class="tile-image-loader-wrapper">
+										<img 
+											src="<?php echo $tile_img ?>" 
+											width="75" height="75" 
+											data-shape="<?php echo $shape ?>"
+											data-is-hex="<?php echo $is_hex ?>"
+											data-tile-scale="<?php echo get_post_meta( $tile->ID, 'artise-tile-scale', true ) ?>">
+									</div>
 									<?php echo $tile->post_title ?>
 								</div>
 
@@ -415,6 +417,11 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 </div>
 
 <script type="text/javascript">
+
+	/**
+	 * WARNING: Load functionality only takes note of the masks
+	 */
+
 	var BORDER_SLUG = '<?php echo BORDER_CATEGORY_SLUG ?>';
 	var ENV_COUNT = 5;
 
@@ -425,7 +432,7 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 		 ) ?> +  ENV_COUNT
 	};
 
-	function loadMask( maskSrc ){
+	function loadMask( maskSrc, iTile ){
 		var imgClip = new Image(  );
 		imgClip.setAttribute( 'crossOrigin', 'anonymous' );
 
@@ -436,7 +443,11 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 
 		jQuery( imgClip ).load( function(  ){
 			nMask.loaded++;
-			window.loader.progress( nMask.loaded / nMask.total );
+
+			if(iTile != undefined){
+				jQuery('.tile-image-container-' + iTile).removeClass('loading');
+			}
+
 		} )
 
 		jQuery( imgClip ).error( function( err ){
@@ -446,20 +457,32 @@ add_action( 'wp_footer', 'tile_simulator_overlay' );
 		return imgClip;
 	}
 
-	var masks = <?php echo json_encode( $tile_masks ) ?>;
-	var backgrounds = <?php echo json_encode( $tile_bg ) ?>;
-	var tileData = <?php echo json_encode( $tile_data ) ?>;
-
-	for( var i=0; i < backgrounds.length; i++ ){
-		backgrounds[i].color_img = loadMask( backgrounds[i].color_img );
+	function loadColorImg(color){
+		
 	}
 
+	jQuery(window).load(function() {
+		window.loader.progress(1);
 
-	for( var i=0; i < masks.length; i++ ){
-		for( var j=0; j < masks[i].length; j++ ){
-			masks[i][j].src = loadMask( masks[i][j].src );
-			masks[i][j].color_img = loadMask( masks[i][j].color_img );
+		window.masks = <?php echo json_encode( $tile_masks ) ?>;
+		window.backgrounds = <?php echo json_encode( $tile_bg ) ?>;
+		window.tileData = <?php echo json_encode( $tile_data ) ?>;
+
+		for( var i=0; i < window.backgrounds.length; i++ ){
+			window.backgrounds[i].color_img = loadMask( window.backgrounds[i].color_img );
 		}
-	}
+
+
+		for( var i=0; i < window.masks.length; i++ ){
+			for( var j=0; j < window.masks[i].length; j++ ){
+				window.masks[i][j].src = loadMask( window.masks[i][j].src, i );
+				window.masks[i][j].color_img = loadMask( window.masks[i][j].color_img );
+			}
+		}
+	});
+
+	
+
+	
 
 </script>

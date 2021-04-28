@@ -229,6 +229,29 @@ li.tile-category .tile-wrapper .tile-image-container {
   letter-spacing: 2px;
 }
 
+li.tile-category .tile-wrapper .tile-image-container.loading {
+  /* pointer-events: none; */
+  opacity: 0.5;
+}
+
+li.tile-category .tile-wrapper .tile-image-container .tile-image-loader-wrapper {
+  position: relative;
+}
+
+li.tile-category .tile-wrapper .tile-image-container.loading .tile-image-loader-wrapper::before {
+  content: "";
+  background: url(../images/misc/tile-loader.svg);
+  background-size: 60%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  cursor: progress;
+}
+
 li.tile-category .tile-wrapper .tile-image-container img {
   display: block;
   margin-bottom: 5px;
